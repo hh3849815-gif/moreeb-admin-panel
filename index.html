@@ -716,6 +716,23 @@ nav{padding:12px 10px;flex:1;overflow-y:auto;}
       </div>
 
       <div class="ssb full">
+        <div class="ssh">🎖️ كاتيقوريات الرتب</div>
+        <div class="ssbd">
+          <p style="font-size:12px;color:var(--td);margin-bottom:12px;">حدد كل كاتيقوري واضغط عليه لتعديل IDs الرتب تبعه</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;" id="catEditList"></div>
+          <div id="catEditPanel" style="display:none;background:var(--s3);border-radius:10px;padding:14px;border:1px solid var(--br);">
+            <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;" id="catEditTitle"></div>
+            <label class="fl">IDs الرتب (كل ID في سطر)</label>
+            <textarea class="fi" id="catEditIds" style="min-height:120px;resize:vertical;direction:ltr;font-size:11px;" placeholder="1234567890&#10;0987654321"></textarea>
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <button class="btn bg2" onclick="document.getElementById('catEditPanel').style.display='none'">إلغاء</button>
+              <button class="btn bp" onclick="saveCatIds()">💾 حفظ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ssb full">
         <div class="ssh">💬 رومات الديسكورد</div>
         <div class="ssbd">
           <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:12px;align-items:end;">
@@ -1059,6 +1076,7 @@ function gp(id,el){
   else stopChatInterval();
   if(id==='pgStats') updateStats();
   if(id==='pgLog') renderActionLog();
+  if(id==='pgS') renderCatEditList();
 }
 
 // ════════════════════════════════════
@@ -3395,6 +3413,54 @@ async function handleOAuthCallback(){
     toast('خطأ في تسجيل الدخول','e');
     location.reload();
   }
+}
+
+// ════════════════════════════════════
+// CATEGORY SETTINGS
+// ════════════════════════════════════
+let editingCatIdx = null;
+
+function renderCatEditList(){
+  const c = document.getElementById('catEditList');
+  if(!c) return;
+  c.innerHTML = ROLE_CATS.map((cat,i)=>`
+    <div onclick="openCatEdit(${i})" style="cursor:pointer;padding:10px;background:var(--s2);border-radius:8px;border:1px solid var(--br);text-align:center;">
+      <div style="font-size:18px;">${cat.emoji}</div>
+      <div style="font-size:11px;color:#fff;margin-top:4px;">${cat.name}</div>
+      <div style="font-size:10px;color:var(--td);">${cat.ids.length} رتبة</div>
+    </div>`).join('');
+}
+
+function openCatEdit(i){
+  editingCatIdx = i;
+  const cat = ROLE_CATS[i];
+  document.getElementById('catEditTitle').textContent = `${cat.emoji} ${cat.name}`;
+  document.getElementById('catEditIds').value = cat.ids.join('\n');
+  document.getElementById('catEditPanel').style.display='block';
+}
+
+function saveCatIds(){
+  if(editingCatIdx===null) return;
+  const raw = document.getElementById('catEditIds').value.trim();
+  const ids = raw.split('\n').map(s=>s.trim()).filter(s=>s && /^\d+$/.test(s));
+  ROLE_CATS[editingCatIdx].ids = ids;
+  document.getElementById('catEditPanel').style.display='none';
+  renderCatEditList();
+  renderPtsCats&&renderPtsCats();
+  // حفظ في localStorage
+  try{ localStorage.setItem('moreeb_role_cats', JSON.stringify(ROLE_CATS.map(c=>({name:c.name,ids:c.ids})))); }catch(e){}
+  toast(`تم حفظ ${ids.length} رتبة لـ ${ROLE_CATS[editingCatIdx].name} ✅`,'s');
+}
+
+// تحميل الكاتيقوريات المحفوظة
+function loadSavedCats(){
+  try{
+    const saved = localStorage.getItem('moreeb_role_cats');
+    if(saved){
+      const data = JSON.parse(saved);
+      data.forEach((c,i)=>{ if(ROLE_CATS[i]) ROLE_CATS[i].ids = c.ids; });
+    }
+  }catch(e){}
 }
 
 // ════════════════════════════════════
