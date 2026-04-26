@@ -1,0 +1,3353 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moreeb RP — لوحة الإدارة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--red:#e63946;--rd:#9b1e28;--rg:rgba(230,57,70,.35);--gold:#f4a726;--bg:#0a0a0f;--s1:#111118;--s2:#1a1a24;--s3:#22222f;--br:rgba(255,255,255,.07);--tx:#e8e8f0;--td:#7a7a9a;--on:#3cba6f;--wn:#f4a726;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(230,57,70,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(230,57,70,.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;top:-120px;left:50%;transform:translateX(-50%);width:700px;height:300px;background:radial-gradient(ellipse,rgba(230,57,70,.18) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+/* LOGIN */
+#LS{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.lc{background:var(--s1);border:1px solid rgba(230,57,70,.3);border-radius:20px;padding:38px 42px;width:430px;max-width:94vw;box-shadow:0 0 60px rgba(230,57,70,.12);animation:fup .6s ease;position:relative;z-index:1;}
+@keyframes fup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.li{text-align:center;margin-bottom:24px;}
+.lic{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--red),var(--rd));display:inline-flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:10px;box-shadow:0 0 30px var(--rg);}
+.lt{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:2px;}
+#srvLogo{width:48px;height:48px;border-radius:12px;object-fit:cover;display:none;margin-bottom:8px;}
+.ls{font-size:13px;color:var(--td);margin-top:4px;}
+#srvDesc{font-size:12px;color:var(--td);margin-top:6px;padding:8px 12px;background:var(--s2);border-radius:8px;border:1px solid var(--br);display:none;}
+.rd{border-radius:10px;padding:9px 14px;text-align:center;font-size:13px;font-weight:700;margin-bottom:14px;display:none;animation:fup .3s ease;}
+.rd.owner{background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.4);color:#ffd700;}
+.rd.admin{background:rgba(230,57,70,.12);border:1px solid rgba(230,57,70,.4);color:var(--red);}
+.rd.mod{background:rgba(244,167,38,.12);border:1px solid rgba(244,167,38,.4);color:var(--gold);}
+.rd.helper{background:rgba(255,140,0,.12);border:1px solid rgba(255,140,0,.4);color:#ff8c00;}
+.rd.vip{background:rgba(74,144,226,.12);border:1px solid rgba(74,144,226,.4);color:#4a90e2;}
+.rd.member{background:rgba(255,255,255,.06);border:1px solid var(--br);color:var(--td);}
+
+/* FORMS */
+.fg{margin-bottom:14px;}
+.fl{font-size:12px;color:var(--td);margin-bottom:5px;display:block;letter-spacing:.5px;}
+.fi,.fs,.fta{width:100%;background:var(--s2);border:1px solid var(--br);border-radius:10px;color:var(--tx);font-family:'Cairo',sans-serif;font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s;direction:rtl;}
+.fi:focus,.fs:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,70,.1);}
+.fi:disabled,.fs:disabled{opacity:.35;cursor:not-allowed;}
+.fs option{background:var(--s2);}
+.fta{resize:vertical;min-height:80px;}
+.bl{width:100%;padding:13px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--red),var(--rd));color:#fff;font-family:'Cairo',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;margin-top:4px;box-shadow:0 4px 20px rgba(230,57,70,.35);}
+.bl:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(230,57,70,.45);}
+.bl.loading{pointer-events:none;opacity:.7;}
+.save-row{background:var(--s2);border:1px solid var(--br);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:13px;}
+
+/* SIDEBAR */
+.sb{position:fixed;right:0;top:0;bottom:0;width:248px;background:var(--s1);border-left:1px solid var(--br);display:flex;flex-direction:column;z-index:100;}
+.la{padding:18px 16px 14px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:10px;}
+.li2{width:38px;height:38px;background:linear-gradient(135deg,var(--red),var(--rd));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 16px var(--rg);flex-shrink:0;}
+#sbLogo{width:38px;height:38px;border-radius:10px;object-fit:cover;display:none;}
+.lt2{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:#fff;letter-spacing:1px;}
+.ls2{font-size:10px;color:var(--td);}
+nav{padding:12px 10px;flex:1;overflow-y:auto;}
+.ns{font-size:10px;color:var(--td);letter-spacing:2px;padding:8px 8px 4px;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;margin-bottom:2px;color:var(--td);font-size:14px;font-weight:600;transition:all .2s;position:relative;user-select:none;}
+.ni:hover{background:var(--s2);color:var(--tx);}
+.ni.active{background:linear-gradient(135deg,rgba(230,57,70,.2),rgba(230,57,70,.05));color:#fff;border:1px solid rgba(230,57,70,.3);}
+.ni.active::before{content:'';position:absolute;right:-10px;top:50%;transform:translateY(-50%);width:3px;height:70%;background:var(--red);border-radius:3px 0 0 3px;}
+.ni .ic{font-size:16px;width:22px;text-align:center;}
+.nb{margin-right:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;}
+.sf{padding:12px;border-top:1px solid var(--br);}
+.uc{background:var(--s2);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px;}
+.ua{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid var(--red);flex-shrink:0;}
+
+/* MAIN */
+.main{margin-right:248px;padding:24px;position:relative;z-index:1;}
+.pg{display:none;}
+.pg.active{display:block;animation:fup .35s ease;}
+.tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap;}
+.pt{font-size:22px;font-weight:900;color:#fff;}
+.pt span{color:var(--red);}
+.tr{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.op{display:flex;align-items:center;gap:6px;background:var(--s1);border:1px solid var(--br);border-radius:20px;padding:6px 14px;font-size:13px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--on);box-shadow:0 0 6px var(--on);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.st{background:var(--s1);border:1px solid var(--br);border-radius:14px;padding:18px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:default;}
+.st:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.4);}
+.st::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.st.cr::before{background:var(--red);}
+.st.cg::before{background:var(--gold);}
+.st.co::before{background:var(--on);}
+.st.cb::before{background:#4a90e2;}
+.si{font-size:22px;margin-bottom:8px;}
+.sv{font-size:30px;font-weight:900;color:#fff;line-height:1;}
+.sl{font-size:12px;color:var(--td);margin-top:4px;}
+.sbg{position:absolute;bottom:-10px;left:-10px;font-size:64px;opacity:.05;}
+
+/* CARD */
+.cd{background:var(--s1);border:1px solid var(--br);border-radius:14px;overflow:hidden;margin-bottom:16px;}
+.ch{padding:13px 18px;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;}
+.cht{font-size:14px;font-weight:700;color:#fff;}
+.cb2{padding:16px 18px;}
+.g2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:11px;color:var(--td);text-align:right;padding:0 0 10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--br);}
+.tbl td{padding:9px 0;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.mi{display:flex;align-items:center;gap:10px;}
+.ma{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.mn{font-weight:700;color:#fff;font-size:13px;}
+.ms{font-size:11px;color:var(--td);}
+
+/* BADGES */
+.rb{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.rb-owner{background:rgba(255,215,0,.18);color:#ffd700;border:1px solid rgba(255,215,0,.35);}
+.rb-admin{background:rgba(230,57,70,.18);color:var(--red);border:1px solid rgba(230,57,70,.35);}
+.rb-mod{background:rgba(244,167,38,.18);color:var(--gold);border:1px solid rgba(244,167,38,.35);}
+.rb-helper{background:rgba(255,140,0,.18);color:#ff8c00;border:1px solid rgba(255,140,0,.35);}
+.rb-vip{background:rgba(74,144,226,.18);color:#4a90e2;border:1px solid rgba(74,144,226,.35);}
+.rb-member{background:rgba(255,255,255,.08);color:var(--td);border:1px solid var(--br);}
+
+/* ACTION BTNS */
+.ab{display:flex;gap:5px;flex-wrap:wrap;}
+.bs{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:'Cairo',sans-serif;transition:all .2s;}
+.bw{background:rgba(244,167,38,.18);color:var(--gold);border:1px solid rgba(244,167,38,.3);}
+.bw:hover{background:rgba(244,167,38,.4);}
+.br2{background:rgba(74,144,226,.18);color:#4a90e2;border:1px solid rgba(74,144,226,.3);}
+.br2:hover{background:rgba(74,144,226,.4);}
+.bk{background:rgba(230,57,70,.14);color:var(--red);border:1px solid rgba(230,57,70,.3);}
+.bk:hover{background:rgba(230,57,70,.35);}
+
+/* LOG */
+.ll{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;}
+.li3{display:flex;align-items:flex-start;gap:10px;padding:11px;border-radius:10px;background:var(--s2);border:1px solid var(--br);animation:lin .4s ease;position:relative;overflow:hidden;}
+@keyframes lin{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+.li3::before{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;background:var(--on);}
+.li3.wl::before{background:var(--wn);}
+.li3.rl::before{background:var(--red);}
+.lav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.lm{font-size:13px;font-weight:600;color:#fff;}
+.lmt{font-size:11px;color:var(--td);margin-top:3px;}
+.ct{background:rgba(255,255,255,.07);border:1px solid var(--br);color:var(--td);font-size:10px;padding:1px 7px;border-radius:4px;}
+
+/* WARN */
+.wi{padding:12px;border-radius:10px;background:rgba(244,167,38,.07);border:1px solid rgba(244,167,38,.2);margin-bottom:8px;}
+.wh{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.wn2{font-size:13px;font-weight:700;color:#fff;}
+.wc{background:var(--gold);color:#000;font-size:10px;font-weight:900;padding:1px 8px;border-radius:20px;}
+.wr{font-size:12px;color:var(--td);}
+.wd{font-size:11px;color:rgba(244,167,38,.6);margin-top:2px;}
+
+/* RULES */
+.rli{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--s2);border:1px solid var(--br);margin-bottom:8px;}
+.rli:hover{border-color:rgba(230,57,70,.3);}
+.rln{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,var(--red),var(--rd));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0;}
+.rlt{font-size:13px;color:var(--tx);line-height:1.6;flex:1;}
+.rld{background:none;border:none;color:var(--td);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:4px;}
+.rld:hover{color:var(--red);}
+
+/* ROLES */
+.rlc{display:flex;flex-direction:column;gap:10px;}
+.rci{background:var(--s2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;transition:border-color .2s;}
+.rci:hover{border-color:rgba(255,255,255,.15);}
+.rcr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.rcl{display:flex;align-items:center;gap:10px;}
+.rcd{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.rcn{font-size:15px;font-weight:800;color:#fff;}
+.rkb{display:flex;align-items:center;gap:8px;background:var(--s3);border-radius:8px;padding:8px 12px;margin-bottom:8px;}
+.rkcb{background:none;border:none;cursor:pointer;font-size:14px;color:var(--td);margin-right:auto;}
+.rkcopy{background:rgba(74,144,226,.15);border:1px solid rgba(74,144,226,.3);color:#4a90e2;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Cairo,sans-serif;}
+.pt2{display:flex;gap:6px;flex-wrap:wrap;}
+.pt3{font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid var(--br);color:var(--td);}
+.pt3.on{background:rgba(60,186,111,.12);border-color:rgba(60,186,111,.3);color:var(--on);}
+
+/* TICKETS */
+.tki{background:var(--s2);border:1px solid var(--br);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:border-color .2s;cursor:pointer;}
+.tki:hover{border-color:rgba(230,57,70,.3);}
+.tkh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.tkn{font-size:14px;font-weight:700;color:#fff;}
+.tks{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;}
+.tks.open{background:rgba(60,186,111,.15);border:1px solid rgba(60,186,111,.3);color:var(--on);}
+.tks.closed{background:rgba(255,255,255,.07);border:1px solid var(--br);color:var(--td);}
+.tks.pending{background:rgba(244,167,38,.15);border:1px solid rgba(244,167,38,.3);color:var(--gold);}
+.tkb{font-size:12px;color:var(--td);margin-bottom:4px;}
+.tkt{font-size:11px;color:rgba(255,255,255,.3);}
+
+/* SETTINGS */
+.ssg{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.ssb{background:var(--s1);border:1px solid var(--br);border-radius:14px;overflow:hidden;}
+.ssb.full{grid-column:1/-1;}
+.ssh{padding:13px 18px;border-bottom:1px solid var(--br);font-size:14px;font-weight:700;color:#fff;}
+.ssbd{padding:16px 18px;}
+.ssr{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.ssr:last-child{border-bottom:none;}
+.ssl{font-size:13px;color:var(--tx);font-weight:600;}
+.ssd{font-size:11px;color:var(--td);margin-top:2px;}
+.tg{width:40px;height:22px;background:var(--s3);border-radius:20px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.tg.on{background:var(--red);}
+.tg::after{content:'';position:absolute;top:3px;right:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;}
+.tg.on::after{transform:translateX(-18px);}
+
+/* BTNS */
+.btn{padding:9px 18px;border-radius:8px;border:none;font-family:'Cairo',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;}
+.bp{background:linear-gradient(135deg,var(--red),var(--rd));color:#fff;box-shadow:0 4px 14px rgba(230,57,70,.3);}
+.bp:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(230,57,70,.4);}
+.bg2{background:transparent;color:var(--td);border:1px solid var(--br);}
+.bg2:hover{color:#fff;border-color:rgba(255,255,255,.2);}
+.bon{background:linear-gradient(135deg,var(--on),#1a7040);color:#fff;}
+.bon:hover{transform:translateY(-1px);}
+.bgold{background:linear-gradient(135deg,var(--gold),#c47c00);color:#000;font-weight:900;}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;}
+.mo.open{display:flex;animation:fin .2s;}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.md{background:var(--s1);border:1px solid var(--br);border-radius:16px;padding:26px;width:460px;max-width:94vw;animation:sin .3s ease;max-height:90vh;overflow-y:auto;}
+@keyframes sin{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.mdt{font-size:17px;font-weight:900;color:#fff;margin-bottom:18px;}
+.mdf{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+
+/* TICKET DETAIL */
+.tkd{background:var(--s2);border-radius:12px;padding:16px;margin-bottom:14px;}
+.tkdm{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;margin-bottom:12px;}
+.tkdmsg{padding:10px 13px;border-radius:10px;font-size:13px;line-height:1.5;}
+.tkdmsg.usr{background:rgba(230,57,70,.12);border:1px solid rgba(230,57,70,.2);color:var(--tx);margin-left:20px;}
+.tkdmsg.adm{background:rgba(74,144,226,.12);border:1px solid rgba(74,144,226,.2);color:var(--tx);margin-right:20px;}
+.tkdwho{font-size:10px;color:var(--td);margin-bottom:4px;}
+
+/* TOAST */
+.tc{position:fixed;bottom:20px;left:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;}
+.tst{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:12px 16px;font-size:13px;color:#fff;display:flex;align-items:center;gap:10px;min-width:260px;animation:tup .3s ease,tout .3s 2.7s forwards;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.tst.s{border-color:var(--on);}
+.tst.e{border-color:var(--red);}
+.tst.w{border-color:var(--gold);}
+.tst.i{border-color:#4a90e2;}
+@keyframes tup{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes tout{to{opacity:0;transform:translateY(10px)}}
+
+/* MISC */
+.empty{text-align:center;padding:26px;color:var(--td);font-size:13px;}
+.pn{background:rgba(230,57,70,.08);border:1px solid rgba(230,57,70,.25);border-radius:10px;padding:11px 16px;font-size:13px;color:var(--red);margin-bottom:14px;display:none;}
+.pn.show{display:block;}
+.dvd{height:1px;background:var(--br);margin:14px 0;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:4px;}
+.pinput{position:relative;}
+.pinput input{padding-left:38px;}
+.peye{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--td);}
+.g22{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.clri{width:100%;height:42px;border:1px solid var(--br);background:var(--s2);cursor:pointer;border-radius:10px;padding:4px;}
+</style>
+</head>
+<body>
+
+<!-- ═══ LANDING PAGE ═══ -->
+<div id="LS">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(230,57,70,.15),transparent 60%);pointer-events:none;z-index:0;"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(74,144,226,.08),transparent 60%);pointer-events:none;z-index:0;"></div>
+  <div style="position:relative;z-index:1;text-align:center;padding:20px;max-width:500px;width:100%;animation:fup .8s ease;">
+    <!-- Logo -->
+    <div style="margin-bottom:24px;">
+      <img id="srvLogo" src="" alt="logo" style="display:none;width:80px;height:80px;border-radius:20px;object-fit:cover;margin-bottom:12px;box-shadow:0 0 40px var(--rg);">
+      <div class="lic" id="defaultIcon" style="width:80px;height:80px;font-size:40px;border-radius:20px;margin:0 auto 12px;">🎮</div>
+      <div class="lt" id="srvName" style="font-size:34px;letter-spacing:3px;">MOREEB RP</div>
+      <div class="ls" style="font-size:15px;margin-top:8px;">لوحة إدارة السيرفر</div>
+      <div id="srvDesc" style="font-size:13px;color:var(--td);margin-top:10px;padding:8px 16px;background:var(--s2);border-radius:10px;border:1px solid var(--br);display:none;"></div>
+    </div>
+
+    <!-- Stats row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;">
+      <div style="background:var(--s1);border:1px solid var(--br);border-radius:14px;padding:16px;">
+        <div style="font-size:22px;font-weight:900;color:#fff;" id="landMemCount">—</div>
+        <div style="font-size:11px;color:var(--td);margin-top:4px;">عضو في السيرفر</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--br);border-radius:14px;padding:16px;">
+        <div style="font-size:22px;font-weight:900;color:var(--on);" id="landOnlineCount">—</div>
+        <div style="font-size:11px;color:var(--td);margin-top:4px;">أونلاين الآن</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--br);border-radius:14px;padding:16px;">
+        <div style="font-size:22px;font-weight:900;color:var(--gold);" id="landTkCount">—</div>
+        <div style="font-size:11px;color:var(--td);margin-top:4px;">تكت مفتوح</div>
+      </div>
+    </div>
+
+    <!-- Login Button -->
+    <button class="bl" onclick="showLoginForm()" style="font-size:17px;padding:16px;border-radius:14px;letter-spacing:1px;margin-bottom:0;">
+      🔐 تسجيل دخول بالإدارة
+    </button>
+    <div style="font-size:12px;color:var(--td);margin-top:14px;">🔔 إشعار تلقائي للديسكورد عند دخولك</div>
+  </div>
+</div>
+
+<!-- ═══ LOGIN FORM MODAL ═══ -->
+<div class="mo" id="mLogin">
+  <div class="md" style="width:400px;">
+    <div class="mdt">🔐 تسجيل دخول بالإدارة</div>
+    <div class="fg">
+      <label class="fl">يوزرك في الديسكورد</label>
+      <input class="fi" id="lnm" placeholder="مثال: khaled123" style="direction:ltr;" oninput="onUsernameInput()">
+      <div id="userCheckResult" style="margin-top:8px;font-size:12px;display:none;padding:8px 12px;border-radius:8px;"></div>
+    </div>
+    <div id="codeSection" style="display:none;">
+      <div class="fg"><label class="fl">كود الدخول (للإدارة العليا فقط)</label>
+        <div class="pinput"><input class="fi" type="password" id="lcd" placeholder="ادخل كودك الخاص" style="padding-left:38px;"><button class="peye" onclick="togglePw('lcd',this)">👁</button></div>
+      </div>
+    </div>
+    <div class="save-row" style="margin-bottom:4px;">
+      <span style="font-size:13px;color:var(--td);">💾 حفظ بياناتي</span>
+      <div class="tg" id="tgSave" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div id="rdEl" style="margin-top:10px;display:none;border-radius:10px;padding:10px 14px;text-align:center;font-size:13px;font-weight:700;"></div>
+    <div class="mdf">
+      <button class="btn bg2" onclick="cM('mLogin')">إلغاء</button>
+      <button class="btn bp" id="lbtn" onclick="doLogin()" style="flex:1;">تسجيل الدخول ←</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sb" id="SB" style="display:none;">
+  <div class="la">
+    <img id="sbLogo" src="" alt="logo">
+    <div class="li2" id="sbIcon">🎮</div>
+    <div><div class="lt2" id="sbSrvNm">MOREEB RP</div><div class="ls2">لوحة الإدارة</div></div>
+  </div>
+  <nav>
+    <div class="ns">الرئيسية</div>
+    <div class="ni active" onclick="gp('pgD',this)"><span class="ic">📊</span>لوحة التحكم</div>
+    <div class="ni" onclick="gp('pgM',this)"><span class="ic">👥</span>الأعضاء<span class="nb" id="nbM">0</span></div>
+    <div class="ni" onclick="gp('pgL',this)"><span class="ic">📋</span>سجل الدخول</div>
+    <div class="ns" style="margin-top:8px;">الإدارة</div>
+    <div class="ni" id="niRoles" onclick="gp('pgR',this)"><span class="ic">🎖️</span>إدارة الرتب</div>
+    <div class="ni" onclick="gp('pgW',this)"><span class="ic">⚠️</span>الإنذارات<span class="nb" id="nbW">0</span></div>
+    <div class="ni" onclick="gp('pgRules',this)"><span class="ic">📜</span>القوانين</div>
+    <div class="ni" onclick="gp('pgT',this)"><span class="ic">🎫</span>التكتات<span class="nb" id="nbT">0</span></div>
+    <div class="ni" id="niPts" onclick="gp('pgPts',this)"><span class="ic">⭐</span>النقاط</div>
+    <div class="ns" style="margin-top:8px;">رومات الديسكورد</div>
+    <div id="chatNavItems"></div>
+    <div class="ni" onclick="gp('pgStats',this)"><span class="ic">📊</span>الإحصائيات</div>
+    <div class="ni" onclick="gp('pgLog',this)"><span class="ic">📋</span>سجل الإجراءات</div>
+    <div class="ni" id="niSet" onclick="gp('pgS',this)"><span class="ic">⚙️</span>الإعدادات</div>
+  </nav>
+  <div class="sf">
+    <div class="uc">
+      <div class="ua" id="sbAv">م</div>
+      <div><div style="font-size:13px;font-weight:700;color:#fff;" id="sbNm">—</div><div style="font-size:11px;" id="sbRl">—</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main" id="MA" style="display:none;">
+
+  <!-- DASHBOARD -->
+  <div id="pgD" class="pg active">
+    <div class="tb">
+      <div class="pt">لوحة التحكم <span>Moreeb RP</span></div>
+      <div class="tr">
+        <div class="op"><div class="dot"></div><span>مرتبط بالديسكورد</span></div>
+        <button class="btn bp" onclick="oM('mAM')">+ تسجيل عضو</button>
+      </div>
+    </div>
+    <div class="sg">
+      <div class="st cr"><div class="si">👥</div><div class="sv" id="sMem">0</div><div class="sl">الأعضاء المسجلين</div><div class="sbg">👥</div></div>
+      <div class="st co"><div class="si">🟢</div><div class="sv" id="sLog">0</div><div class="sl">تسجيلات الدخول</div><div class="sbg">🟢</div></div>
+      <div class="st cg"><div class="si">⚠️</div><div class="sv" id="sWrn">0</div><div class="sl">الإنذارات</div><div class="sbg">⚠️</div></div>
+      <div class="st cb"><div class="si">🎫</div><div class="sv" id="sTkt">0</div><div class="sl">التكتات المفتوحة</div><div class="sbg">🎫</div></div>
+    </div>
+    <div class="g2">
+      <div class="cd">
+        <div class="ch"><div class="cht">👥 آخر الأعضاء</div><button class="btn bg2" style="font-size:12px;padding:5px 12px;" onclick="gp('pgM',document.querySelectorAll('.ni')[1])">عرض الكل</button></div>
+        <div class="cb2"><table class="tbl"><thead><tr><th>العضو</th><th>الرتبة</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="dTb"><tr><td colspan="4"><div class="empty">لا يوجد أعضاء</div></td></tr></tbody></table></div>
+      </div>
+      <div class="cd">
+        <div class="ch"><div class="cht">📋 سجل مباشر</div><div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--on);"><div class="dot" style="width:6px;height:6px;"></div>Live</div></div>
+        <div class="cb2"><div class="ll" id="dLog"><div class="empty">في انتظار أول تسجيل...</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMBERS -->
+  <div id="pgM" class="pg">
+    <div class="tb"><div class="pt">👥 <span>الأعضاء</span></div><button class="btn bp" onclick="oM('mAM')">+ تسجيل عضو</button></div>
+    <div class="cd"><div class="cb2">
+      <table class="tbl"><thead><tr><th>العضو</th><th>الرتبة</th><th>الحالة</th><th>الإنذارات</th><th>الإجراءات</th></tr></thead>
+      <tbody id="mTb"><tr><td colspan="5"><div class="empty">لا يوجد أعضاء</div></td></tr></tbody></table>
+    </div></div>
+  </div>
+
+  <!-- LOGS -->
+  <div id="pgL" class="pg">
+    <div class="tb"><div class="pt">📋 <span>سجل الدخول</span></div></div>
+    <div class="cd"><div class="cb2"><div class="ll" id="lAll" style="max-height:600px;"><div class="empty">لا يوجد سجلات</div></div></div></div>
+  </div>
+
+  <!-- ROLES -->
+  <div id="pgR" class="pg">
+    <div class="tb"><div class="pt">🎖️ <span>إدارة الرتب</span></div>
+      <div class="tr"><button class="btn bg2" id="btnSync" onclick="syncFromDiscord()">🔄 مزامنة مع الديسكورد</button><button class="btn bp" id="btnAR" onclick="oM('mAddRole')">+ رتبة جديدة</button></div>
+    </div>
+    <div class="pn" id="pnR">🔒 عرض فقط — الأونر يقدر يعدّل</div>
+    <div class="g2">
+      <div>
+        <div class="cd">
+          <div class="ch"><div class="cht">🎖️ الرتب وأكوادها</div></div>
+          <div class="cb2"><div class="rlc" id="rlEl"></div></div>
+        </div>
+        <div class="cd">
+          <div class="ch"><div class="cht">✏️ تعيين رتبة — الديسكورد</div></div>
+          <div class="cb2">
+            <div class="fg"><label class="fl">اسم العضو (كما في الديسكورد)</label><input class="fi" id="asnNm" placeholder="اسم العضو" oninput="searchMember()"></div>
+            <div id="memberSuggestions" style="display:none;background:var(--s3);border-radius:8px;margin-top:-10px;margin-bottom:10px;overflow:hidden;"></div>
+            <div class="g22" style="align-items:end;margin-bottom:12px;">
+              <div><label class="fl">الرتبة الجديدة</label><select class="fs" id="asnRl" onchange="updateDiscordRoleSelect('asnRl','asnDsRl')"></select></div>
+              <button class="btn bp" id="btnAsn" onclick="assignRoleDS()">🎖️ تعيين في الديسكورد</button>
+            </div>
+            <input type="hidden" id="asnUserId">
+            <input type="hidden" id="asnDsRlId">
+            <div id="asnStatus" style="font-size:12px;color:var(--td);margin-bottom:10px;"></div>
+            <div class="dvd"></div>
+            <div class="ch" style="padding:0;border:none;margin-bottom:10px;"><div class="cht">🔴 سحب رتبة — الديسكورد</div></div>
+            <div class="fg"><label class="fl">اسم العضو</label><input class="fi" id="rmNm" placeholder="اسم العضو" oninput="searchMemberRm()"></div>
+            <div id="memberSuggestionsRm" style="display:none;background:var(--s3);border-radius:8px;margin-top:-10px;margin-bottom:10px;overflow:hidden;"></div>
+            <input type="hidden" id="rmUserId">
+            <div class="g22" style="align-items:end;">
+              <div><label class="fl">الرتبة للسحب</label><select class="fs" id="rmRlDs"></select></div>
+              <button class="btn bg2" id="btnRm" onclick="removeRoleDS()" style="border-color:rgba(230,57,70,.4);color:var(--red);">🔴 سحب من الديسكورد</button>
+            </div>
+            <div class="dvd"></div>
+            <div class="ch" style="padding:0;border:none;margin-bottom:10px;"><div class="cht">👥 إعطاء رتبة لكل رتبة معينة</div></div>
+            <div class="g22" style="align-items:end;margin-bottom:10px;">
+              <div><label class="fl">من رتبة (المصدر)</label><select class="fs" id="giveAllSrc"></select></div>
+              <div><label class="fl">أعطيهم رتبة</label><select class="fs" id="giveAllTgt"></select></div>
+            </div>
+            <button class="btn bp" style="width:100%;" id="btnGiveAll" onclick="giveRoleToAll()">⭐ إعطاء الرتبة لكل أعضاء الرتبة المصدر</button>
+            <div id="giveAllStatus" style="font-size:12px;color:var(--td);margin-top:8px;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Perm matrix -->
+      <div class="cd">
+        <div class="ch"><div class="cht">🔐 صلاحيات الرتب</div></div>
+        <div class="cb2" style="overflow-x:auto;"><table class="tbl" id="pmTbl"></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WARNINGS -->
+  <div id="pgW" class="pg">
+    <div class="tb"><div class="pt">⚠️ <span>الإنذارات</span></div><button class="btn bp" onclick="oM('mAW')">+ إنذار جديد</button></div>
+    <div id="wCont"><div class="empty">لا توجد إنذارات</div></div>
+  </div>
+
+  <!-- RULES -->
+  <div id="pgRules" class="pg">
+    <div class="tb"><div class="pt">📜 <span>القوانين</span></div><button class="btn bp" onclick="oM('mARule')">+ قانون جديد</button></div>
+    <div class="cd"><div class="cb2"><div id="rlsCont"></div></div></div>
+  </div>
+
+  <!-- TICKETS -->
+  <div id="pgT" class="pg">
+    <div class="tb"><div class="pt">🎫 <span>التكتات</span></div>
+      <div class="tr">
+        <select class="fs" id="tkFilter" onchange="renderTickets()" style="width:130px;padding:8px 12px;font-size:13px;">
+          <option value="all">الكل</option>
+          <option value="open">🟢 مفتوح</option>
+          <option value="pending">⏳ انتظار</option>
+          <option value="closed">🔒 مغلق</option>
+        </select>
+        <button class="btn bg2" onclick="sendReminderAll()" style="border-color:rgba(244,167,38,.3);color:var(--gold);">🔔 تذكير الكل</button>
+        <button class="btn bp" onclick="oM('mAT')">+ تكت جديد</button>
+      </div>
+    </div>
+    <!-- كاتيقوري التكتات -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;" id="tkCats">
+      <div class="cd" style="cursor:pointer;text-align:center;padding:14px;" onclick="filterByType('all')" id="cat_all">
+        <div style="font-size:22px;">🎫</div><div style="font-size:12px;color:var(--td);margin-top:4px;">الكل</div>
+        <div style="font-size:20px;font-weight:900;color:#fff;" id="catc_all">0</div>
+      </div>
+      <div class="cd" style="cursor:pointer;text-align:center;padding:14px;" onclick="filterByType('role')" id="cat_role">
+        <div style="font-size:22px;">🎖️</div><div style="font-size:12px;color:var(--td);margin-top:4px;">رتبة</div>
+        <div style="font-size:20px;font-weight:900;color:#fff;" id="catc_role">0</div>
+      </div>
+      <div class="cd" style="cursor:pointer;text-align:center;padding:14px;" onclick="filterByType('ban')" id="cat_ban">
+        <div style="font-size:22px;">🚫</div><div style="font-size:12px;color:var(--td);margin-top:4px;">باند</div>
+        <div style="font-size:20px;font-weight:900;color:#fff;" id="catc_ban">0</div>
+      </div>
+      <div class="cd" style="cursor:pointer;text-align:center;padding:14px;" onclick="filterByType('report')" id="cat_report">
+        <div style="font-size:22px;">📢</div><div style="font-size:12px;color:var(--td);margin-top:4px;">بلاغ</div>
+        <div style="font-size:20px;font-weight:900;color:#fff;" id="catc_report">0</div>
+      </div>
+      <div class="cd" style="cursor:pointer;text-align:center;padding:14px;" onclick="filterByType('support')" id="cat_support">
+        <div style="font-size:22px;">💬</div><div style="font-size:12px;color:var(--td);margin-top:4px;">دعم</div>
+        <div style="font-size:20px;font-weight:900;color:#fff;" id="catc_support">0</div>
+      </div>
+    </div>
+    <div id="tkCont"><div class="empty">لا توجد تكتات</div></div>
+  </div>
+
+  <!-- POINTS -->
+  <div id="pgPts" class="pg">
+    <div class="tb">
+      <div class="pt">⭐ <span>النقاط الإدارية</span></div>
+      <div class="tr">
+        <button class="btn bg2" onclick="oM('mMeetingConfig')" style="border-color:rgba(244,167,38,.3);color:var(--gold);">⚙️ إعدادات الرتب</button>
+        <button class="btn bp" onclick="oM('mNewMeeting')">📅 جلسة جديدة</button>
+      </div>
+    </div>
+
+    <!-- أزرار الكاتيقوريات -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="ptsCats"></div>
+
+    <!-- نافذة بعد اختيار كاتيقوري -->
+    <div class="cd" id="ptsRolesPanel" style="display:none;margin-bottom:16px;">
+      <div class="ch">
+        <div class="cht" id="ptsPanelTitle">—</div>
+        <button class="btn bg2" style="font-size:12px;" onclick="closePtsPanel()">✕ إغلاق</button>
+      </div>
+      <div class="cb2">
+
+        <!-- STEP 1: اختار رتبة من رتب الكاتيقوري -->
+        <div id="step1" style="display:block;">
+          <div style="font-size:13px;color:var(--td);margin-bottom:10px;">🎖️ اختار الرتبة اللي تبي تعطيها:</div>
+          <div id="catRoleButtons" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
+        </div>
+
+        <!-- STEP 2: عرض الأعضاء مع checkbox -->
+        <div id="step2" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#fff;">الرتبة التي ستُعطى: <span id="giveRoleName" style="color:var(--gold);"></span></div>
+              <div style="font-size:12px;color:var(--td);margin-top:3px;" id="catMembersCount"></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn bg2" style="font-size:12px;" onclick="document.getElementById('step1').style.display='block';document.getElementById('step2').style.display='none';selectedGiveRoleId=null;selectedGiveRoleName='';">← رجوع</button>
+              <button class="btn bg2" style="font-size:12px;border-color:rgba(60,186,111,.3);color:var(--on);" onclick="selectAllMembers(true)">✅ تحديد الكل</button>
+              <button class="btn bg2" style="font-size:12px;" onclick="selectAllMembers(false)">☐ إلغاء الكل</button>
+              <button class="btn bp" onclick="giveRoleToSelected()">🚀 إعطاء للمحددين</button>
+            </div>
+          </div>
+
+          <!-- اختيار الرتبة المراد إعطاؤها -->
+          <div style="background:var(--s3);border-radius:10px;padding:12px;border:1px solid var(--br);margin-bottom:12px;">
+            <label class="fl">🎖️ اختار الرتبة اللي تبي تعطيها للمحددين:</label>
+            <div style="display:flex;gap:10px;align-items:center;margin-top:6px;">
+              <select class="fs" id="step2RoleSelect" style="flex:1;"></select>
+            </div>
+          </div>
+
+          <!-- قائمة الأعضاء مع checkbox -->
+          <div style="font-size:12px;color:var(--td);margin-bottom:8px;">✅ حدد الأعضاء اللي تبي تعطيهم الرتبة:</div>
+          <div id="catMembersList" style="background:var(--s3);border-radius:10px;padding:10px;border:1px solid var(--br);max-height:280px;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;"></div>
+
+          <!-- نتيجة -->
+          <div id="giveResult" style="display:none;margin-top:12px;padding:12px;border-radius:10px;background:rgba(60,186,111,.08);border:1px solid rgba(60,186,111,.2);font-size:13px;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="g2" style="grid-template-columns:1.2fr 1fr;">
+      <div class="cd">
+        <div class="ch"><div class="cht">🏆 ليدربورد النقاط</div></div>
+        <div class="cb2"><div id="ptsBoard"><div class="empty">لا يوجد نقاط بعد</div></div></div>
+      </div>
+      <div class="cd">
+        <div class="ch"><div class="cht">📋 سجل النقاط</div></div>
+        <div class="cb2"><div id="ptsLog" style="max-height:400px;overflow-y:auto;"><div class="empty">لا يوجد سجل</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div id="pgChat" class="pg">
+    <div class="tb">
+      <div class="pt">💬 <span>الرومات</span></div>
+      <div class="topbar-r">
+        <div class="op" id="currentChName"><div class="dot"></div><span>اختار روم</span></div>
+        <button class="btn bg2" style="font-size:12px;" onclick="loadChat()">🔄 تحديث</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:16px;height:calc(100vh - 200px);">
+
+      <!-- قائمة الرومات -->
+      <div class="cd" style="overflow-y:auto;">
+        <div class="card-h" style="padding:12px 14px;border-bottom:1px solid var(--br);">
+          <div class="card-title" style="font-size:13px;">📋 الرومات</div>
+          <button class="btn bg2" style="font-size:11px;padding:4px 10px;" onclick="fetchChannels()">🔄</button>
+        </div>
+        <div id="channelsList" style="padding:8px;">
+          <div class="empty" style="padding:16px;">اضغط 🔄 لجلب الرومات</div>
+        </div>
+      </div>
+
+      <!-- الشات -->
+      <div class="cd" style="display:flex;flex-direction:column;overflow:hidden;">
+        <!-- Messages -->
+        <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;" id="chatMessages">
+          <div class="empty">اختار روم من القائمة</div>
+        </div>
+        <!-- Input -->
+        <div style="padding:12px 16px;border-top:1px solid var(--br);display:flex;gap:10px;align-items:flex-end;">
+          <textarea class="fi" id="chatInput" placeholder="اكتب رسالتك..." style="flex:1;min-height:44px;max-height:100px;resize:none;padding:10px 14px;"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg();}"></textarea>
+          <button class="btn bp" onclick="sendChatMsg()" style="height:44px;padding:0 18px;flex-shrink:0;">إرسال ←</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STATS PAGE -->
+  <div id="pgStats" class="pg">
+    <div class="tb"><div class="pt">📊 <span>الإحصائيات</span></div>
+      <div class="tr"><button class="btn bp" onclick="genWeeklyReport()">📧 تقرير أسبوعي</button></div>
+    </div>
+    <div class="g2" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
+      <div class="cd" style="text-align:center;padding:20px;">
+        <div style="font-size:36px;font-weight:900;color:var(--red);" id="statTotalMembers">0</div>
+        <div style="font-size:12px;color:var(--td);margin-top:6px;">👥 إجمالي الأعضاء</div>
+      </div>
+      <div class="cd" style="text-align:center;padding:20px;">
+        <div style="font-size:36px;font-weight:900;color:var(--gold);" id="statOpenTk">0</div>
+        <div style="font-size:12px;color:var(--td);margin-top:6px;">🎫 تكتات مفتوحة</div>
+      </div>
+      <div class="cd" style="text-align:center;padding:20px;">
+        <div style="font-size:36px;font-weight:900;color:var(--on);" id="statTotalPts">0</div>
+        <div style="font-size:12px;color:var(--td);margin-top:6px;">⭐ إجمالي النقاط</div>
+      </div>
+      <div class="cd" style="text-align:center;padding:20px;">
+        <div style="font-size:36px;font-weight:900;color:#e67e22;" id="statTotalWarns">0</div>
+        <div style="font-size:12px;color:var(--td);margin-top:6px;">⚠️ إجمالي الإنذارات</div>
+      </div>
+    </div>
+    <div class="g2" style="grid-template-columns:1fr 1fr;">
+      <div class="cd">
+        <div class="ch"><div class="cht">🎫 التكتات حسب النوع</div></div>
+        <div class="cb2" id="statTkTypes"></div>
+      </div>
+      <div class="cd">
+        <div class="ch"><div class="cht">⭐ أعلى 10 نقاط</div></div>
+        <div class="cb2" id="statTopPts"></div>
+      </div>
+    </div>
+    <div class="cd" style="margin-top:16px;">
+      <div class="ch">
+        <div class="cht">🔍 بحث متقدم عن عضو</div>
+      </div>
+      <div class="cb2">
+        <div style="display:flex;gap:10px;margin-bottom:12px;">
+          <input class="fi" id="memberSearch" placeholder="ابحث بالاسم أو الرتبة..." style="flex:1;" oninput="searchMember()">
+          <button class="btn bg2" onclick="document.getElementById('memberSearch').value='';searchMember()">✕ مسح</button>
+        </div>
+        <div id="memberSearchResults"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG PAGE -->
+  <div id="pgLog" class="pg">
+    <div class="tb"><div class="pt">📋 <span>سجل الإجراءات</span></div>
+      <div class="tr">
+        <select class="fs" id="logFilter" onchange="renderActionLog()" style="width:130px;">
+          <option value="all">الكل</option>
+          <option value="role">🎖️ رتب</option>
+          <option value="warn">⚠️ إنذارات</option>
+          <option value="ticket">🎫 تكتات</option>
+          <option value="points">⭐ نقاط</option>
+          <option value="login">🔐 دخول</option>
+        </select>
+        <button class="btn bg2" onclick="actionLog=[];saveLS();renderActionLog();toast('تم مسح السجل','w')">🗑 مسح</button>
+      </div>
+    </div>
+    <div id="actionLogCont"><div class="empty">لا يوجد سجل بعد</div></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="pgS" class="pg">
+    <div class="tb"><div class="pt">⚙️ <span>الإعدادات</span></div><button class="btn bon" onclick="saveSettings()">💾 حفظ الإعدادات</button></div>
+    <div class="pn" id="pnS">🔒 فقط الأونر يقدر يعدّل الإعدادات</div>
+    <div class="ssg" id="sGrid">
+
+      <div class="ssb">
+        <div class="ssh">🔗 إعدادات الديسكورد</div>
+        <div class="ssbd">
+          <div class="fg"><label class="fl">Webhook URL</label><input class="fi" id="cfgWh" placeholder="https://discord.com/api/webhooks/..." style="direction:ltr;font-size:11px;"></div>
+          <div class="fg"><label class="fl">Worker URL (Cloudflare)</label><input class="fi" id="cfgWu" placeholder="https://moreeb-bot.xxx.workers.dev" style="direction:ltr;font-size:11px;"></div>
+          <div class="fg"><label class="fl">Bot Token</label>
+            <div class="pinput"><input class="fi" type="password" id="cfgTk" placeholder="Bot Token" style="direction:ltr;font-size:11px;padding-left:38px;"><button class="peye" onclick="togglePw('cfgTk',this)">👁</button></div>
+          </div>
+          <div class="fg"><label class="fl">Server ID (Guild ID)</label><input class="fi" id="cfgGid" placeholder="Server ID" style="direction:ltr;"></div>
+          <button class="btn bp" style="width:100%;margin-top:4px;" onclick="testWH()">🧪 اختبار الاتصال</button>
+        </div>
+      </div>
+
+      <div class="ssb">
+        <div class="ssh">📢 روم الإشعارات</div>
+        <div class="ssbd">
+          <div class="fg"><label class="fl">روم تسجيل الدخول</label><input class="fi" id="rm1" placeholder="Channel ID" style="direction:ltr;font-size:12px;"></div>
+          <div class="fg"><label class="fl">روم الإنذارات</label><input class="fi" id="rm2" placeholder="Channel ID" style="direction:ltr;font-size:12px;"></div>
+          <div class="fg"><label class="fl">روم الرتب</label><input class="fi" id="rm3" placeholder="Channel ID" style="direction:ltr;font-size:12px;"></div>
+          <div class="fg"><label class="fl">روم التكتات</label><input class="fi" id="rm4" placeholder="Channel ID" style="direction:ltr;font-size:12px;"></div>
+        </div>
+      </div>
+
+      <div class="ssb">
+        <div class="ssh">👑 الأونر والأكواد</div>
+        <div class="ssbd">
+          <div class="fg"><label class="fl">اسم الأونر</label><input class="fi" id="cfgOn" placeholder="اسمك في الديسكورد"></div>
+          <div class="fg"><label class="fl">كود الأونر</label>
+            <div class="pinput"><input class="fi" type="password" id="cfgOc" placeholder="كود الأونر السري" style="padding-left:38px;"><button class="peye" onclick="togglePw('cfgOc',this)">👁</button></div>
+          </div>
+          <button class="btn bg2" style="width:100%;margin-top:4px;" onclick="oM('mMC')">🔑 إدارة أكواد الرتب</button>
+        </div>
+      </div>
+
+      <div class="ssb">
+        <div class="ssh">🔔 الإشعارات</div>
+        <div class="ssbd">
+          <div class="ssr"><div><div class="ssl">إشعار تسجيل الدخول</div></div><div class="tg on" id="tgL" onclick="this.classList.toggle('on')"></div></div>
+          <div class="ssr"><div><div class="ssl">إشعار الإنذارات</div></div><div class="tg on" id="tgW" onclick="this.classList.toggle('on')"></div></div>
+          <div class="ssr"><div><div class="ssl">إشعار تغيير الرتب</div></div><div class="tg on" id="tgR" onclick="this.classList.toggle('on')"></div></div>
+          <div class="ssr"><div><div class="ssl">إشعار التكتات</div></div><div class="tg on" id="tgT" onclick="this.classList.toggle('on')"></div></div>
+          <div class="ssr"><div><div class="ssl">السماح للأعضاء بالدخول</div></div><div class="tg on" id="tgMem" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+      </div>
+
+      <div class="ssb full">
+        <div class="ssh">💬 رومات الديسكورد</div>
+        <div class="ssbd">
+          <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:12px;align-items:end;">
+            <div><label class="fl">اسم الروم</label><input class="fi" id="newRoomName" placeholder="مثال: شات الإدارة"></div>
+            <div><label class="fl">Channel ID</label><input class="fi" id="newRoomId" placeholder="مثال: 1234567890" style="direction:ltr;"></div>
+            <button class="btn bp" onclick="addRoom()">+ إضافة</button>
+          </div>
+          <div id="roomsList"></div>
+        </div>
+      </div>
+
+      <div class="ssb full">
+        <div class="ssh">🎮 معلومات السيرفر</div>
+        <div class="ssbd" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+          <div><label class="fl">اسم السيرفر</label><input class="fi" id="cfgSN" value="Moreeb RP" oninput="updateSrvName()"></div>
+          <div><label class="fl">لوقو السيرفر (رابط صورة)</label><input class="fi" id="cfgSL" placeholder="https://..." oninput="updateSrvLogo()"></div>
+          <div><label class="fl">وصف السيرفر</label><input class="fi" id="cfgSD" placeholder="سيرفر رول بلاي عربي..." oninput="updateSrvDesc()"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- Add Member -->
+<div class="mo" id="mAM"><div class="md">
+  <div class="mdt">➕ تسجيل عضو جديد</div>
+  <div class="fg"><label class="fl">الاسم في الديسكورد</label><input class="fi" id="inNm" placeholder="مثال: أحمد"></div>
+  <div class="fg"><label class="fl">الرتبة</label><select class="fs" id="inRl"></select></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mAM')">إلغاء</button><button class="btn bp" onclick="addMember()">تسجيل + إرسال للديسكورد</button></div>
+</div></div>
+
+<!-- Change Role -->
+<div class="mo" id="mCR"><div class="md">
+  <div class="mdt">🎖️ تغيير رتبة <span id="crNm" style="color:var(--red)"></span></div>
+  <div class="fg"><label class="fl">الرتبة الجديدة</label><select class="fs" id="crRl"></select></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mCR')">إلغاء</button><button class="btn bp" onclick="confirmCR()">تأكيد + إرسال</button></div>
+</div></div>
+
+<!-- Add Role -->
+<div class="mo" id="mAddRole"><div class="md">
+  <div class="mdt">🎖️ إضافة رتبة جديدة</div>
+  <div class="g22">
+    <div class="fg"><label class="fl">اسم الرتبة</label><input class="fi" id="rnNm" placeholder="مثال: ناب"></div>
+    <div class="fg"><label class="fl">إيموجي</label><input class="fi" id="rnEm" placeholder="🟤" maxlength="4"></div>
+  </div>
+  <div class="g22">
+    <div class="fg"><label class="fl">لون الرتبة</label><input type="color" class="clri" id="rnClr" value="#7a7a9a"></div>
+    <div class="fg"><label class="fl">كود الدخول</label>
+      <div class="pinput"><input class="fi" id="rnCd" placeholder="مثال: nab2024" type="password" style="padding-left:38px;"><button class="peye" onclick="togglePw('rnCd',this)">👁</button></div>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">صلاحيات الرتبة</label><div class="g22" style="margin-top:6px;" id="nrPg"></div></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mAddRole')">إلغاء</button><button class="btn bp" onclick="addCustomRole()">➕ إضافة</button></div>
+</div></div>
+
+<!-- Edit Role -->
+<div class="mo" id="mER"><div class="md">
+  <div class="mdt">✏️ تعديل رتبة — <span id="erTitle" style="color:var(--red)"></span></div>
+  <input type="hidden" id="erKey">
+  <div class="g22">
+    <div class="fg"><label class="fl">اسم الرتبة</label><input class="fi" id="erNm" placeholder="اسم الرتبة"></div>
+    <div class="fg"><label class="fl">إيموجي</label><input class="fi" id="erEm" placeholder="🔴" maxlength="4"></div>
+  </div>
+  <div class="g22">
+    <div class="fg"><label class="fl">اللون</label><input type="color" class="clri" id="erClr"></div>
+    <div class="fg"><label class="fl">كود الدخول</label>
+      <div class="pinput"><input class="fi" id="erCd" placeholder="كود الدخول" type="password" style="padding-left:38px;"><button class="peye" onclick="togglePw('erCd',this)">👁</button></div>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">الصلاحيات</label><div class="g22" style="margin-top:6px;" id="erPg"></div></div>
+  <div style="background:rgba(244,167,38,.08);border:1px solid rgba(244,167,38,.2);border-radius:10px;padding:9px 13px;font-size:12px;color:var(--gold);margin-bottom:4px;">⚠️ تغيير الكود يلغي دخول من عنده الكود القديم</div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mER')">إلغاء</button><button class="btn bp" onclick="saveER()">💾 حفظ التعديلات</button></div>
+</div></div>
+
+<!-- Manage Codes -->
+<div class="mo" id="mMC"><div class="md" style="width:500px;">
+  <div class="mdt">🔑 إدارة أكواد الرتب</div>
+  <div id="mcTbl"></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mMC')">إغلاق</button><button class="btn bp" onclick="saveCodes()">💾 حفظ الأكواد</button></div>
+</div></div>
+
+<!-- Add Warning -->
+<div class="mo" id="mAW"><div class="md">
+  <div class="mdt">⚠️ إعطاء إنذار</div>
+  <div class="fg"><label class="fl">اسم العضو</label><input class="fi" id="wNm" placeholder="اسم العضو"></div>
+  <div class="fg"><label class="fl">سبب الإنذار</label><input class="fi" id="wRsn" placeholder="سبب الإنذار"></div>
+  <div class="fg"><label class="fl">رقم الإنذار</label><select class="fs" id="wNum"><option>1/3</option><option>2/3</option><option>3/3 🚫</option></select></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mAW')">إلغاء</button><button class="btn bp" onclick="submitWarn()">إرسال + إشعار</button></div>
+</div></div>
+
+<!-- Add Rule -->
+<div class="mo" id="mARule"><div class="md">
+  <div class="mdt">📜 إضافة قانون</div>
+  <div class="fg"><label class="fl">نص القانون</label><input class="fi" id="rlTxt" placeholder="القانون الجديد..."></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mARule')">إلغاء</button><button class="btn bp" onclick="addRule()">إضافة</button></div>
+</div></div>
+
+<!-- Kick -->
+<div class="mo" id="mKick"><div class="md">
+  <div class="mdt" style="color:var(--red);">🚫 طرد عضو</div>
+  <p style="font-size:13px;color:var(--td);margin-bottom:14px;">هل تريد طرد <strong id="kickNm" style="color:#fff;"></strong>؟</p>
+  <div class="fg"><label class="fl">سبب الطرد</label><input class="fi" id="kickRsn" placeholder="سبب الطرد"></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mKick')">إلغاء</button><button class="btn bp" onclick="confirmKick()">طرد + إشعار</button></div>
+</div></div>
+
+<!-- Add Ticket -->
+<div class="mo" id="mAT"><div class="md">
+  <div class="mdt">🎫 فتح تكت جديد</div>
+  <div class="fg"><label class="fl">اسم العضو / الموضوع</label><input class="fi" id="tkNm" placeholder="مثال: مشكلة في الرتبة"></div>
+  <div class="fg"><label class="fl">نوع التكت</label>
+    <select class="fs" id="tkType">
+      <option value="role">🎖️ مشكلة رتبة</option>
+      <option value="ban">🚫 ظلم / باند</option>
+      <option value="report">📢 بلاغ على عضو</option>
+      <option value="support">💬 دعم عام</option>
+      <option value="other">📋 أخرى</option>
+    </select>
+  </div>
+  <div class="fg"><label class="fl">تفاصيل الطلب</label><textarea class="fi fta" id="tkMsg" placeholder="اكتب تفاصيل مشكلتك..."></textarea></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mAT')">إلغاء</button><button class="btn bp" onclick="addTicket()">فتح التكت + إرسال للديسكورد</button></div>
+</div></div>
+
+<!-- Ticket Detail -->
+<div class="mo" id="mTD"><div class="md" style="width:520px;">
+  <div class="mdt">🎫 تكت — <span id="tdTitle" style="color:var(--red)"></span></div>
+  <div class="tkd">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div style="font-size:12px;color:var(--td);" id="tdMeta"></div>
+      <div id="tdStatus"></div>
+    </div>
+    <div class="tkdmsg" id="tdMsgs"></div>
+  </div>
+  <div id="tdReply">
+    <div class="fg"><label class="fl">ردّك على التكت</label><textarea class="fi fta" id="tdRplyTxt" placeholder="اكتب ردك هنا..." style="min-height:70px;"></textarea></div>
+    <div style="display:flex;gap:10px;justify-content:space-between;align-items:center;">
+      <button class="btn bg2" id="btnClose" onclick="closeTicket()">🔒 إغلاق التكت</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn bg2" onclick="cM('mTD')">إغلاق</button>
+        <button class="btn bp" onclick="replyTicket()">إرسال الرد + إشعار</button>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- Meeting Config Modal -->
+<div class="mo" id="mMeetingConfig"><div class="md" style="width:500px;max-height:85vh;overflow-y:auto;">
+  <div class="mdt">⚙️ إعدادات رتب الحضور</div>
+  <p style="font-size:13px;color:var(--td);margin-bottom:16px;">حدد رتبة الديسكورد اللي تنضاف تلقائياً لما تعطي نقاط لكل كاتيقوري</p>
+  <div id="meetingConfigList"></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mMeetingConfig')">إغلاق</button><button class="btn bp" onclick="saveMeetingConfig()">💾 حفظ</button></div>
+</div></div>
+
+<!-- New Meeting Modal -->
+<div class="mo" id="mNewMeeting"><div class="md">
+  <div class="mdt">📅 جلسة حضور جديدة</div>
+  <div class="fg"><label class="fl">اسم الاجتماع</label><input class="fi" id="mtgName" placeholder="مثال: اجتماع الإدارة الأسبوعي"></div>
+  <div class="fg"><label class="fl">الكاتيقوري / الرتبة</label><select class="fs" id="mtgCat"></select></div>
+  <div class="fg"><label class="fl">النقاط لكل حضور</label><input class="fi" type="number" id="mtgPts" value="10" min="1"></div>
+  <div class="fg">
+    <label class="fl">أسماء الحاضرين (كل اسم في سطر)</label>
+    <textarea class="fi" id="mtgAttendees" placeholder="خالد&#10;محمد&#10;أحمد" style="min-height:120px;resize:vertical;"></textarea>
+  </div>
+  <div class="mdf">
+    <button class="btn bg2" onclick="cM('mNewMeeting')">إلغاء</button>
+    <button class="btn bp" onclick="runMeeting()">🚀 تنفيذ + إعطاء الرتب</button>
+  </div>
+</div></div>
+
+<!-- Profile Modal -->
+<div class="mo" id="mProfile"><div class="md" style="width:420px;">
+  <div style="text-align:center;margin-bottom:20px;">
+    <img id="profileAvatar" src="" alt="" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--red);margin-bottom:12px;display:none;">
+    <div id="profileAvatarFallback" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--rd));display:inline-flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#fff;margin-bottom:12px;border:3px solid var(--red);">م</div>
+    <div style="font-size:20px;font-weight:900;color:#fff;" id="profileName">—</div>
+    <div style="font-size:13px;color:var(--td);margin-top:4px;" id="profileUsername">—</div>
+  </div>
+  <div id="profileRoles" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:16px;"></div>
+  <div id="profileStats" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mProfile')">إغلاق</button></div>
+</div></div>
+
+<!-- Add Points Modal -->
+<div class="mo" id="mAddPts"><div class="md">
+  <div class="mdt">⭐ إعطاء نقاط</div>
+  <div class="fg"><label class="fl">العضو أو الرتبة</label><input class="fi" id="ptsTarget" placeholder="اسم العضو أو الرتبة"></div>
+  <div class="fg"><label class="fl">النقاط</label><input class="fi" type="number" id="ptsAmt" placeholder="مثال: 10" min="1"></div>
+  <div class="fg"><label class="fl">السبب</label><input class="fi" id="ptsSbr" placeholder="مثال: حضور اجتماع"></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mAddPts')">إلغاء</button><button class="btn bp" onclick="quickGivePts()">إعطاء + إشعار</button></div>
+</div></div>
+
+<!-- Add Member to Ticket Modal -->
+<div class="mo" id="mAddToTk"><div class="md">
+  <div class="mdt">➕ إضافة شخص للتكت</div>
+  <div class="fg"><label class="fl">اسم العضو</label><input class="fi" id="addTkMember" placeholder="اسم العضو"></div>
+  <div class="mdf"><button class="btn bg2" onclick="cM('mAddToTk')">إلغاء</button><button class="btn bp" onclick="addMemberToTicket()">إضافة + إشعار</button></div>
+</div></div>
+
+<div class="tc" id="TC"></div>
+
+<script>
+// ════════════════════════════════════
+// CONFIG — يتغيّر من الإعدادات
+// ════════════════════════════════════
+const CFG = {
+  webhook: 'https://discord.com/api/webhooks/1496858144918212810/TvyRC4tB0F398urfmA2__cy2Fu1cDKZ8iyWEQxdTsBLCt3mnfwczMDG9Qf1rdYrG9thN',
+  botToken: '',
+  workerUrl: 'https://moreeb-bot.hh3849815.workers.dev',
+  guildId: '1481533244049461415',
+  ownerName: 'moreeb',
+  ownerCode: 'OWNER#2024',
+  notifyLogin:true, notifyWarn:true, notifyRole:true, notifyTicket:true,
+  allowMembers:true,
+  srvName:'Moreeb RP', srvLogo:'', srvDesc:'',
+};
+
+// ════════════════════════════════════
+// PERMISSIONS
+// ════════════════════════════════════
+const PD = [
+  {key:'viewDash',  label:'عرض لوحة التحكم'},
+  {key:'addMember', label:'تسجيل أعضاء'},
+  {key:'giveWarn',  label:'إعطاء إنذارات'},
+  {key:'kick',      label:'طرد الأعضاء'},
+  {key:'manageRoles',label:'إدارة الرتب'},
+  {key:'editRules', label:'تعديل القوانين'},
+  {key:'replyTicket',label:'الرد على التكتات'},
+  {key:'settings',  label:'الإعدادات'},
+];
+
+// ════════════════════════════════════
+// ROLES
+// ════════════════════════════════════
+let ROLES = [
+  {key:'owner', label:'Owner', emoji:'👑', color:'#ffd700', code:'OWNER#2024',
+   perms:{viewDash:true,addMember:true,giveWarn:true,kick:true,manageRoles:true,editRules:true,replyTicket:true,settings:true}, builtin:true},
+  {key:'admin', label:'أدمن', emoji:'🔴', color:'#e63946', code:'ADMIN#5678',
+   perms:{viewDash:true,addMember:true,giveWarn:true,kick:true,manageRoles:false,editRules:true,replyTicket:true,settings:false}, builtin:true},
+  {key:'mod',   label:'مود',  emoji:'🟡', color:'#f4a726', code:'MOD#1122',
+   perms:{viewDash:true,addMember:true,giveWarn:true,kick:false,manageRoles:false,editRules:false,replyTicket:true,settings:false}, builtin:true},
+  {key:'helper',label:'هيلبر',emoji:'🟠', color:'#ff8c00', code:'HELPER#3344',
+   perms:{viewDash:true,addMember:false,giveWarn:false,kick:false,manageRoles:false,editRules:false,replyTicket:true,settings:false}, builtin:true},
+  {key:'vip',   label:'VIP',  emoji:'💎', color:'#4a90e2', code:'VIP#9900',
+   perms:{viewDash:true,addMember:false,giveWarn:false,kick:false,manageRoles:false,editRules:false,replyTicket:false,settings:false}, builtin:true},
+  {key:'member',label:'عضو',  emoji:'⚪', color:'#7a7a9a', code:'MEMBER#0000',
+   perms:{viewDash:false,addMember:false,giveWarn:false,kick:false,manageRoles:false,editRules:false,replyTicket:false,settings:false}, builtin:true},
+];
+
+// ════════════════════════════════════
+// STATE
+// ════════════════════════════════════
+let CU=null,members=[],warnings=[],loginLogs=[],tickets=[],crTarget=null,kickTarget=null,tkTarget=null;
+const AVC=['#e63946','#f4a726','#4a90e2','#3cba6f','#9b59b6','#1abc9c','#e67e22'];
+const rnd=()=>AVC[Math.floor(Math.random()*AVC.length)];
+const now=()=>new Date().toLocaleString('ar-SA',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'});
+const gR=k=>ROLES.find(r=>r.key===k)||ROLES[ROLES.length-1];
+const hp=p=>CU&&gR(CU.role).perms[p];
+
+// ════════════════════════════════════
+// LOCALSTORAGE
+// ════════════════════════════════════
+function saveLS(){
+  try{
+    const d={members,warnings,loginLogs,tickets,ROLES,CFG,pointsData,rooms,actionLog};
+    localStorage.setItem('moreeb_data',JSON.stringify(d));
+  }catch(e){}
+}
+function loadLS(){
+  try{
+    const raw=localStorage.getItem('moreeb_data');
+    if(!raw)return;
+    const d=JSON.parse(raw);
+    if(d.members)members=d.members;
+    if(d.warnings)warnings=d.warnings;
+    if(d.loginLogs)loginLogs=d.loginLogs;
+    if(d.tickets)tickets=d.tickets;
+    if(d.pointsData)pointsData=d.pointsData;
+    if(d.rooms&&d.rooms.length)rooms=d.rooms;
+    if(d.actionLog)actionLog=d.actionLog;
+    if(d.ROLES&&d.ROLES.length)ROLES=d.ROLES;
+    if(d.CFG){
+      Object.assign(CFG,d.CFG);
+      // apply saved settings to inputs
+      setTimeout(()=>{
+        document.getElementById('cfgWh').value=CFG.webhook||'';
+        document.getElementById('cfgWu').value=CFG.workerUrl||'';
+        document.getElementById('cfgTk').value=CFG.botToken||'';
+        document.getElementById('cfgGid').value=CFG.guildId||'';
+        document.getElementById('cfgOn').value=CFG.ownerName||'';
+        document.getElementById('cfgOc').value=CFG.ownerCode||'';
+        document.getElementById('cfgSN').value=CFG.srvName||'Moreeb RP';
+        document.getElementById('cfgSL').value=CFG.srvLogo||'';
+        document.getElementById('cfgSD').value=CFG.srvDesc||'';
+        updateSrvName();updateSrvLogo();updateSrvDesc();
+        if(!CFG.notifyLogin)document.getElementById('tgL').classList.remove('on');
+        if(!CFG.notifyWarn)document.getElementById('tgW').classList.remove('on');
+        if(!CFG.notifyRole)document.getElementById('tgR').classList.remove('on');
+        if(!CFG.notifyTicket)document.getElementById('tgT').classList.remove('on');
+        if(!CFG.allowMembers)document.getElementById('tgMem').classList.remove('on');
+      },100);
+    }
+  }catch(e){}
+}
+
+function loadSavedLogin(){
+  try{
+    const sv=localStorage.getItem('moreeb_saved_user');
+    if(!sv)return;
+    const u=JSON.parse(sv);
+    document.getElementById('lnm').value=u.name||'';
+    document.getElementById('lcd').value=u.code||'';
+    document.getElementById('tgSave').classList.add('on');
+    onNm();onCd();
+  }catch(e){}
+}
+
+// ════════════════════════════════════
+// UTILS
+// ════════════════════════════════════
+function toast(msg,t='s'){
+  const ic={s:'✅',e:'❌',w:'⚠️',i:'ℹ️'};
+  const el=document.createElement('div');el.className=`tst ${t}`;
+  el.innerHTML=`<span>${ic[t]||'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('TC').appendChild(el);
+  setTimeout(()=>el.remove(),3200);
+}
+function oM(id){document.getElementById(id).classList.add('open');}
+function cM(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+function togglePw(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';}
+function gp(id,el){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  if(id==='pgChat'){ loadChat(); startChatInterval(); }
+  else stopChatInterval();
+  if(id==='pgStats') updateStats();
+  if(id==='pgLog') renderActionLog();
+}
+
+// ════════════════════════════════════
+// SERVER BRANDING
+// ════════════════════════════════════
+function updateSrvName(){
+  const v=document.getElementById('cfgSN').value||'Moreeb RP';
+  document.getElementById('srvName').textContent=v;
+  document.getElementById('sbSrvNm').textContent=v;
+  CFG.srvName=v;
+}
+function updateSrvLogo(){
+  const v=document.getElementById('cfgSL').value.trim();
+  CFG.srvLogo=v;
+  const lsl=document.getElementById('srvLogo');
+  const ldi=document.getElementById('defaultIcon');
+  const sbl=document.getElementById('sbLogo');
+  const sbi=document.getElementById('sbIcon');
+  if(v){
+    lsl.src=v;lsl.style.display='inline-block';ldi.style.display='none';
+    sbl.src=v;sbl.style.display='block';sbi.style.display='none';
+  }else{
+    lsl.style.display='none';ldi.style.display='inline-flex';
+    sbl.style.display='none';sbi.style.display='flex';
+  }
+}
+function updateSrvDesc(){
+  const v=document.getElementById('cfgSD').value.trim();
+  CFG.srvDesc=v;
+  const el=document.getElementById('srvDesc');
+  el.textContent=v;
+  el.style.display=v?'block':'none';
+}
+
+// ════════════════════════════════════
+// DISCORD ROLES SYNC — جلب رتب الديسكورد الحقيقية
+// ════════════════════════════════════
+let discordRoles = []; // رتب السيرفر الحقيقية من الديسكورد
+let discordMembers = []; // أعضاء السيرفر الحقيقيين
+
+async function fetchDiscordRoles(){
+  try{
+    const r = await fetch(CFG.workerUrl + '/roles');
+    const data = await r.json();
+    if(Array.isArray(data)){
+      // استثني @everyone وفلتر حسب اللون
+      discordRoles = data
+        .filter(r => r.name !== '@everyone' && r.name !== 'moreeb-bot')
+        .sort((a,b) => b.position - a.position);
+      syncDiscordRolesToUI();
+      return true;
+    }
+  }catch(e){ console.error('Worker error:', e); }
+  return false;
+}
+
+async function fetchDiscordMembers(){
+  try{
+    // ابدأ من آخر عضو موجود عشان نكمل بدل ما نبدأ من أول
+    const existingIds = new Set(discordMembers.map(m=>m.user?.id));
+    let lastId = discordMembers.length > 0
+      ? discordMembers.reduce((max,m)=> BigInt(m.user?.id||0) > BigInt(max) ? m.user.id : max, '0')
+      : '0';
+    
+    const startCount = discordMembers.length;
+    let page = 0;
+    let added = 0;
+
+    while(true){
+      const r = await fetch(CFG.workerUrl+'/members?after='+lastId);
+      const data = await r.json();
+      if(!Array.isArray(data)||data.length===0) break;
+      // أضف الأعضاء الجدد فقط
+      const newMembers = data.filter(m=>!existingIds.has(m.user?.id));
+      newMembers.forEach(m=>existingIds.add(m.user?.id));
+      discordMembers = discordMembers.concat(newMembers);
+      added += newMembers.length;
+      lastId = data[data.length-1].user.id;
+      page++;
+      if(page%3===0) toast(`جلب الأعضاء... ${discordMembers.length} (+${added})`, 'i');
+      if(data.length<100) break;
+      await new Promise(res=>setTimeout(res,1000));
+    }
+
+    if(discordMembers.length>0){
+      syncMembersFromDiscord();
+      try{ localStorage.setItem('moreeb_discord_members', JSON.stringify(discordMembers)); }catch(e){}
+      toast(`تم جلب ${discordMembers.length} عضو (+${added} جديد) ✅`,'s');
+      return true;
+    }
+  }catch(e){ console.error('members error',e); toast('خطأ في جلب الأعضاء','e'); }
+  return false;
+}
+
+function intToHex(n){
+  if(!n) return '#7a7a9a';
+  return '#' + n.toString(16).padStart(6,'0');
+}
+
+function syncDiscordRolesToUI(){
+  if(!discordRoles.length) return;
+  // أضف رتب الديسكورد الحقيقية للـ ROLES الموجودة
+  discordRoles.forEach(dr => {
+    const exists = ROLES.find(r => r.discordId === dr.id || r.label === dr.name);
+    if(!exists){
+      const color = intToHex(dr.color);
+      ROLES.splice(ROLES.length-1, 0, {
+        key: 'ds_' + dr.id,
+        label: dr.name,
+        emoji: '🎖️',
+        color: color,
+        code: '',
+        discordId: dr.id,
+        discordRole: true,
+        perms:{viewDash:false,addMember:false,giveWarn:false,kick:false,manageRoles:false,editRules:false,replyTicket:false,settings:false},
+        builtin:false
+      });
+    }
+  });
+  buildSelects();
+  renderRoles();
+  renderPM();
+  updatePtsRoleSelect();
+  renderPtsCats();
+  populateMtgCat();
+  renderChatNav();
+  renderRoomsList();
+  buildDsRoleSelects();
+  toast('تم جلب ' + discordRoles.length + ' رتبة من الديسكورد ✅', 's');
+}
+
+function syncMembersFromDiscord(){
+  if(!discordMembers.length) return;
+  discordMembers.forEach(dm => {
+    const name = dm.nick || dm.user?.username || 'مجهول';
+    const existing = members.find(m => m.discordId === dm.user?.id || m.name === name);
+    // جيب أعلى رتبة عند العضو
+    let topRole = null;
+    if(dm.roles && dm.roles.length){
+      const memberRoleIds = dm.roles;
+      const matched = discordRoles.filter(r => memberRoleIds.includes(r.id));
+      if(matched.length) topRole = matched[0]; // أعلى رتبة (مرتبة حسب position)
+    }
+    const roleKey = topRole ? ('ds_' + topRole.id) : 'member';
+    if(!existing){
+      members.push({
+        name,
+        role: roleKey,
+        color: topRole ? intToHex(topRole.color) : '#7a7a9a',
+        warns: 0,
+        discordId: dm.user?.id,
+        avatar: dm.user?.avatar ? `https://cdn.discordapp.com/avatars/${dm.user.id}/${dm.user.avatar}.png` : null
+      });
+    } else if(!existing.discordId) {
+      existing.discordId = dm.user?.id;
+      existing.role = roleKey;
+    }
+  });
+  renderMembers();
+  renderStats();
+  toast('تم جلب ' + discordMembers.length + ' عضو من الديسكورد ✅', 's');
+}
+
+// ════════════════════════════════════
+// WEBHOOK
+// ════════════════════════════════════
+async function sendHook(payload){
+  const wh=CFG.webhook||document.getElementById('cfgWh').value.trim();
+  if(!wh)return false;
+  try{const r=await fetch(wh,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});return r.ok;}
+  catch{return false;}
+}
+async function testWH(){
+  const ok=await sendHook({embeds:[{title:'🧪 اختبار — Moreeb RP',color:0x3cba6f,description:'✅ الاتصال يعمل',footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+  toast(ok?'الاتصال يعمل ✅':'فشل الاتصال ❌ تحقق من الـ Webhook',ok?'s':'e');
+}
+
+// ════════════════════════════════════
+// LOGIN DETECT
+// ════════════════════════════════════
+function detectRole(nm,cd){
+  if(nm.toLowerCase()===CFG.ownerName.toLowerCase()&&cd===CFG.ownerCode)return'owner';
+  return ROLES.find(r=>r.code===cd&&r.key!=='owner')?.key||null;
+}
+function showRD(rk){
+  const el=document.getElementById('rdEl');
+  if(!rk){el.style.display='none';return;}
+  const r=gR(rk);
+  el.className=`rd ${rk}`;
+  el.innerHTML=`<span style="font-size:18px;">${r.emoji}</span> رتبتك: <strong>${r.label}</strong>`;
+  el.style.display='block';
+}
+
+// ════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════
+let detectedDiscordRole = null; // الرتبة المكتشفة من الديسكورد
+
+let usernameTimer = null;
+
+async function onUsernameInput(){
+  const resultEl = document.getElementById('userCheckResult');
+  const codeSection = document.getElementById('codeSection');
+  const username = document.getElementById('lnm').value.trim().toLowerCase();
+  if(!username || username.length < 2){ resultEl.style.display='none'; return; }
+
+  resultEl.style.display='block';
+  resultEl.style.background='rgba(74,144,226,.1)';
+  resultEl.style.border='1px solid rgba(74,144,226,.3)';
+  resultEl.style.color='#4a90e2';
+  resultEl.innerHTML='⏳ جاري البحث...';
+
+  clearTimeout(usernameTimer);
+  usernameTimer = setTimeout(async ()=>{
+    // أول ابحث في discordMembers المحفوظ
+    let dm = discordMembers.find(m=>
+      (m.user?.username||'').toLowerCase()===username ||
+      (m.user?.global_name||'').toLowerCase()===username ||
+      (m.nick||'').toLowerCase()===username
+    );
+
+    // لو ما لقيناه — ابحث في localStorage
+    if(!dm){
+      try{
+        const saved = localStorage.getItem('moreeb_discord_members');
+        if(saved){
+          const all = JSON.parse(saved);
+          dm = all.find(m=>
+            (m.user?.username||'').toLowerCase()===username ||
+            (m.user?.global_name||'').toLowerCase()===username ||
+            (m.nick||'').toLowerCase()===username
+          );
+          if(dm && !discordMembers.find(m=>m.user?.id===dm.user?.id)){
+            discordMembers.push(dm);
+          }
+        }
+      }catch(e){}
+    }
+
+    // لو ما لقيناه — اسأل الـ Worker مباشرة
+    if(!dm && CFG.workerUrl){
+      try{
+        const r = await fetch(CFG.workerUrl+'/member?username='+encodeURIComponent(username));
+        const data = await r.json();
+        if(data && data.user) dm = data;
+      }catch(e){}
+    }
+
+    if(dm){
+      // جيب الرتب من discordRoles أو اجلبها
+      let roles = discordRoles;
+      if(!roles.length){
+        try{
+          const r = await fetch(CFG.workerUrl+'/roles');
+          roles = await r.json();
+          if(Array.isArray(roles)) discordRoles = roles;
+        }catch(e){}
+      }
+      const memberRoles = roles.filter(r=>dm.roles?.includes(r.id)).sort((a,b)=>b.position-a.position);
+      const topRole = memberRoles[0];
+      const clr = topRole?.color?'#'+topRole.color.toString(16).padStart(6,'0'):'var(--td)';
+      detectedDiscordRole = {dm, topRole, memberRoles};
+      resultEl.style.background='rgba(60,186,111,.1)';
+      resultEl.style.border='1px solid rgba(60,186,111,.3)';
+      resultEl.style.color='#3cba6f';
+      resultEl.innerHTML=`✅ تم التعرف عليك — <strong style="color:${clr};">${topRole?.name||'عضو'}</strong>`;
+      codeSection.style.display='none';
+    } else {
+      detectedDiscordRole = null;
+      resultEl.style.background='rgba(230,57,70,.1)';
+      resultEl.style.border='1px solid rgba(230,57,70,.3)';
+      resultEl.style.color='var(--red)';
+      resultEl.innerHTML='⚠️ ما لقيناك — ادخل كودك يدوياً';
+      codeSection.style.display='block';
+    }
+  }, 600);
+}
+
+async function doLogin(){
+  const nm=document.getElementById('lnm').value.trim();
+  const cd=document.getElementById('lcd').value.trim();
+  if(!nm){toast('ادخل يوزرك في الديسكورد','e');return;}
+
+  let rk = null;
+
+  // لو لقيناه في الديسكورد — حدد رتبته تلقائياً
+  if(detectedDiscordRole?.dm){
+    const dm = detectedDiscordRole.dm;
+    const memberRoles = detectedDiscordRole.memberRoles;
+    // ابحث عن أعلى رتبة عنده في ROLES
+    for(const dr of memberRoles){
+      const found = ROLES.find(r=>r.discordId===dr.id || r.label===dr.name);
+      if(found){ rk=found.key; break; }
+    }
+    // لو ما لقينا رتبة مطابقة — خليه عضو عادي
+    if(!rk) rk='member';
+  } else {
+    // استخدم الكود اليدوي
+    if(!cd){toast('ادخل كود الدخول','e');return;}
+    rk=detectRole(nm,cd);
+    if(!rk){toast('الكود غير صحيح ❌','e');return;}
+  }
+  const r=gR(rk);
+  if(!r.perms.viewDash&&!CFG.allowMembers){toast('تسجيل دخول الأعضاء موقوف','e');return;}
+
+  const btn=document.getElementById('lbtn');
+  btn.textContent='⏳ جاري الإرسال...';btn.classList.add('loading');
+  // استخدم الـ nick من الديسكورد لو متاح
+  const displayName = detectedDiscordRole?.dm?.nick || detectedDiscordRole?.dm?.user?.global_name || nm;
+  CU={name:displayName,role:rk,color:rnd(),discordId:detectedDiscordRole?.dm?.user?.id};
+
+  // Save login if toggle on
+  if(document.getElementById('tgSave').classList.contains('on')){
+    localStorage.setItem('moreeb_saved_user',JSON.stringify({name:nm,code:cd}));
+  }else{
+    localStorage.removeItem('moreeb_saved_user');
+  }
+
+  if(CFG.notifyLogin){
+    await sendHook({embeds:[{title:`${r.emoji} تسجيل دخول — Moreeb RP`,
+      color:parseInt(r.color.replace('#',''),16),
+      fields:[{name:'👤 الاسم',value:nm,inline:true},{name:'🎖️ الرتبة',value:`${r.emoji} ${r.label}`,inline:true},{name:'🕐 الوقت',value:now(),inline:true}],
+      footer:{text:'Moreeb RP — نظام تسجيل الدخول'},timestamp:new Date().toISOString()}]});
+  }
+
+  // Count login
+  loginLogs.unshift({name:nm,role:rk,color:CU.color,type:'login',time:now()});
+  document.getElementById('sLog').textContent=loginLogs.length;
+  addLogEl(nm,rk,CU.color,'login');
+  if(!members.find(m=>m.name===CU.name))addMemberState(CU.name,rk,CU.color);
+
+  btn.textContent='تسجيل الدخول';btn.classList.remove('loading');
+  // إظهار الرتبة المكتشفة لثانية ثم الدخول
+  showRD(rk);
+  await new Promise(r=>setTimeout(r,900));
+  cM('mLogin');
+  document.getElementById('LS').style.display='none';
+  document.getElementById('SB').style.display='flex';
+  document.getElementById('MA').style.display='block';
+  document.getElementById('sbAv').textContent=CU.name.charAt(0);
+  document.getElementById('sbAv').style.background=`linear-gradient(135deg,${r.color},#111)`;
+  document.getElementById('sbNm').textContent=CU.name;
+  document.getElementById('sbRl').textContent=`${r.emoji} ${r.label}`;
+  document.getElementById('sbRl').style.color=r.color;
+  applyPerms(rk);
+  renderStats();
+  saveLS();
+  // جلب الرتب من الديسكورد فوراً بعد الدخول
+  toast(`أهلاً ${nm}! ${r.emoji} ${r.label} — جاري جلب الرتب...`,'s');
+  fetchDiscordRoles().then(ok=>{
+    if(ok){ fetchDiscordMembers(); toast('تم جلب رتب الديسكورد ✅','s'); }
+  });
+  // جلب التكتات
+  loadTicketsFromWorker();
+  setInterval(loadTicketsFromWorker, 30000);
+  // تحديث الأعضاء كل 5 دقائق تلقائياً
+  setInterval(()=>{ if(discordRoles.length) fetchDiscordMembers(); }, 300000);
+}
+
+// ════════════════════════════════════
+// PERMISSIONS
+// ════════════════════════════════════
+function applyPerms(rk){
+  const own=rk==='owner',adm=['owner','admin','mod'].includes(rk);
+  document.getElementById('pnR').classList.toggle('show',!own);
+  document.getElementById('pnS').classList.toggle('show',!own);
+  document.querySelectorAll('#sGrid input,#sGrid select,#sGrid .tg,#sGrid button').forEach(el=>{el.disabled=!own;el.style.opacity=own?'1':'.35';});
+  ['btnAR','btnAsn','btnRm','asnNm','asnRl','rmNm'].forEach(id=>{
+    const el=document.getElementById(id);if(el){el.disabled=!own;el.style.opacity=own?'1':'.4';}
+  });
+  if(!adm){document.getElementById('niSet').style.display='none';document.getElementById('niRoles').style.display='none';}
+  buildSelects();renderRoles();renderPM();
+}
+
+// ════════════════════════════════════
+// STATS
+// ════════════════════════════════════
+function renderStats(){
+  document.getElementById('sMem').textContent=members.length;
+  document.getElementById('sLog').textContent=loginLogs.length;
+  document.getElementById('sWrn').textContent=warnings.length;
+  document.getElementById('sTkt').textContent=tickets.filter(t=>t.status==='open').length;
+  document.getElementById('nbM').textContent=members.length;
+  document.getElementById('nbW').textContent=warnings.length;
+  document.getElementById('nbT').textContent=tickets.filter(t=>t.status!=='closed').length;
+}
+
+// ════════════════════════════════════
+// LOG
+// ════════════════════════════════════
+function addLogEl(nm,rk,color,type){
+  const r=gR(rk);
+  const mk=()=>{
+    const d=document.createElement('div');
+    d.className='li3'+(type==='warn'?' wl':type==='kick'?' rl':'');
+    const ic=type==='warn'?'⚠️':type==='kick'?'🚫':'🟢';
+    const msg=type==='warn'?`${nm} تلقّى إنذاراً`:type==='kick'?`${nm} تم طرده`:`${nm} سجّل دخوله`;
+    d.innerHTML=`<div class="lav" style="background:linear-gradient(135deg,${color},#111)">${nm.charAt(0)}</div>
+      <div><div class="lm">${ic} ${msg}</div>
+      <div style="margin-top:3px;"><span class="rb rb-${rk}" style="font-size:10px;">${r.emoji} ${r.label}</span></div>
+      <div class="lmt">🕐 ${now()} <span class="ct">#سجل-الدخول</span></div></div>`;
+    return d;
+  };
+  ['dLog','lAll'].forEach(id=>{
+    const c=document.getElementById(id);
+    c.querySelector('.empty')?.remove();
+    c.insertBefore(mk(),c.firstChild);
+    while(c.children.length>12)c.removeChild(c.lastChild);
+  });
+}
+
+// ════════════════════════════════════
+// MEMBERS
+// ════════════════════════════════════
+function addMemberState(nm,rk,color){
+  if(members.find(m=>m.name===nm))return;
+  members.push({name:nm,role:rk,color,warns:0});
+  renderMembers();renderStats();saveLS();
+}
+function renderMembers(){
+  const mk=(m,full)=>{
+    const r=gR(m.role);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><div class="mi"><div class="ma" style="background:linear-gradient(135deg,${m.color},#111)">${m.name.charAt(0)}</div>
+        <div><div class="mn">${m.name}</div></div></div></td>
+      <td><span class="rb rb-${m.role}">${r.emoji} ${r.label}</span></td>
+      <td><span style="color:var(--on);font-size:12px;">● أونلاين</span></td>
+      ${full?`<td><span style="font-size:13px;color:${m.warns>=3?'var(--red)':'var(--td)'}">${m.warns}/3 ${m.warns>=3?'🚫':''}</span></td>`:''}
+      <td><div class="ab">
+        ${hp('giveWarn')?`<button class="bs bw" onclick="pfWarn('${m.name}')">⚠️</button>`:''}
+        ${hp('manageRoles')?`<button class="bs br2" onclick="oCR('${m.name}','${m.role}')">🎖️</button>`:''}
+        ${hp('kick')?`<button class="bs bk" onclick="oKick('${m.name}')">🚫</button>`:''}
+      </div></td>`;
+    return tr;
+  };
+  const dt=document.getElementById('dTb');dt.innerHTML='';
+  const mt=document.getElementById('mTb');mt.innerHTML='';
+  if(!members.length){
+    dt.innerHTML='<tr><td colspan="4"><div class="empty">لا يوجد أعضاء</div></td></tr>';
+    mt.innerHTML='<tr><td colspan="5"><div class="empty">لا يوجد أعضاء</div></td></tr>';
+    return;
+  }
+  members.slice(0,5).forEach(m=>dt.appendChild(mk(m,false)));
+  members.forEach(m=>mt.appendChild(mk(m,true)));
+}
+async function addMember(){
+  if(!hp('addMember')){toast('ما عندك صلاحية','e');return;}
+  const nm=document.getElementById('inNm').value.trim();
+  const rk=document.getElementById('inRl').value;
+  if(!nm){toast('ادخل الاسم','e');return;}
+  const color=rnd();const r=gR(rk);
+  addMemberState(nm,rk,color);
+  addLogEl(nm,rk,color,'login');
+  const ok=await sendHook({embeds:[{title:`➕ تسجيل عضو جديد — Moreeb RP`,color:parseInt(r.color.replace('#',''),16)||0x3cba6f,
+    fields:[{name:'👤 الاسم',value:nm,inline:true},{name:'🎖️ الرتبة',value:`${r.emoji} ${r.label}`,inline:true},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+    footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+  cM('mAM');document.getElementById('inNm').value='';
+  toast(ok?`تم تسجيل ${nm} ✅`:`تم تسجيل ${nm}`,'s');
+}
+
+// ════════════════════════════════════
+// CHANGE ROLE
+// ════════════════════════════════════
+let crT=null;
+function oCR(nm,cur){crT=nm;document.getElementById('crNm').textContent=nm;document.getElementById('crRl').value=cur;oM('mCR');}
+async function confirmCR(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const nr=document.getElementById('crRl').value;
+  const m=members.find(x=>x.name===crT);
+  const prev = m ? gR(m.role) : null;
+  if(m){m.role=nr;renderMembers();}
+  const r=gR(nr);
+
+  // سحب الرتبة القديمة وإعطاء الجديدة في الديسكورد
+  const discordMem = discordMembers.find(dm=>(dm.nick||dm.user?.username||'')===crT);
+  if(discordMem?.user?.id){
+    // سحب القديمة
+    const oldDsRole = prev ? discordRoles.find(dr=>dr.id===prev.discordId||dr.name===prev.label) : null;
+    if(oldDsRole?.id){
+      await fetch(CFG.workerUrl+'/role/remove',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({userId:discordMem.user.id,roleId:oldDsRole.id,memberName:crT,roleName:prev?.label,by:CU?.name})});
+    }
+    // إعطاء الجديدة
+    const newDsRole = discordRoles.find(dr=>dr.id===r.discordId||dr.name===r.label);
+    if(newDsRole?.id){
+      const res = await fetch(CFG.workerUrl+'/role/give',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({userId:discordMem.user.id,roleId:newDsRole.id,memberName:crT,roleName:r.label,by:CU?.name})});
+      const data = await res.json();
+      if(data.ok) toast(`تم تغيير رتبة ${crT} في الديسكورد ✅`,'s');
+    }
+  }
+
+  await sendHook({embeds:[{title:`🎖️ تغيير رتبة — Moreeb RP`,color:parseInt(r.color.replace('#',''),16),
+    fields:[{name:'👤 العضو',value:crT,inline:true},{name:'🎖️ الجديدة',value:`${r.emoji} ${r.label}`,inline:true},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+    footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+  cM('mCR');saveLS();
+  if(!discordMem) toast(`تم تغيير الرتبة في الموقع — ما لقيت العضو في الديسكورد`,'w');
+}
+async function assignRole(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const nm=document.getElementById('asnNm').value.trim();
+  const rk=document.getElementById('asnRl').value;
+  if(!nm){toast('ادخل الاسم','e');return;}
+  const m=members.find(x=>x.name===nm);
+  if(m){m.role=rk;renderMembers();}else{addMemberState(nm,rk,rnd());}
+  const r=gR(rk);
+  const ok=await sendHook({embeds:[{title:`🎖️ تعيين رتبة — Moreeb RP`,color:parseInt(r.color.replace('#',''),16),
+    fields:[{name:'👤 العضو',value:nm,inline:true},{name:'🎖️ الرتبة',value:`${r.emoji} ${r.label}`,inline:true},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+    footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+  document.getElementById('asnNm').value='';saveLS();
+  toast(ok?`تم تعيين ${r.label} لـ ${nm} ✅`:`تم التعيين`,'s');
+}
+async function removeRole(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const nm=document.getElementById('rmNm').value.trim();
+  if(!nm){toast('ادخل الاسم','e');return;}
+  const m=members.find(x=>x.name===nm);
+  const prev=m?gR(m.role):null;
+  if(m){m.role='member';renderMembers();}
+  const ok=await sendHook({embeds:[{title:`🔴 سحب رتبة — Moreeb RP`,color:0xe63946,
+    fields:[{name:'👤 العضو',value:nm,inline:true},{name:'🎖️ السابقة',value:prev?`${prev.emoji} ${prev.label}`:'—',inline:true},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+    footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+  document.getElementById('rmNm').value='';saveLS();
+  toast(ok?`تم سحب رتبة ${nm} ✅`:`تم السحب`,'w');
+}
+
+// ════════════════════════════════════
+// KICK
+// ════════════════════════════════════
+function oKick(nm){kickTarget=nm;document.getElementById('kickNm').textContent=nm;oM('mKick');}
+async function confirmKick(){
+  if(!hp('kick')){toast('ما عندك صلاحية','e');return;}
+  const rsn=document.getElementById('kickRsn').value||'لا يوجد سبب';
+  members=members.filter(m=>m.name!==kickTarget);
+  addLogEl(kickTarget,'member',rnd(),'kick');
+  renderMembers();renderStats();
+  const ok=await sendHook({embeds:[{title:`🚫 طرد — Moreeb RP`,color:0xe63946,
+    fields:[{name:'👤 العضو',value:kickTarget,inline:true},{name:'📝 السبب',value:rsn,inline:true},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+    footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+  cM('mKick');document.getElementById('kickRsn').value='';saveLS();
+  toast(ok?`تم طرد ${kickTarget} ✅`:`تم الطرد`,'w');
+}
+
+// ════════════════════════════════════
+// WARNINGS
+// ════════════════════════════════════
+function pfWarn(nm){document.getElementById('wNm').value=nm;oM('mAW');}
+async function submitWarn(){
+  if(!hp('giveWarn')){toast('ما عندك صلاحية','e');return;}
+  const nm=document.getElementById('wNm').value.trim();
+  const rsn=document.getElementById('wRsn').value.trim();
+  const num=document.getElementById('wNum').value;
+  if(!nm||!rsn){toast('اكمل البيانات','e');return;}
+  warnings.push({name:nm,reason:rsn,num,time:now()});
+  const m=members.find(x=>x.name===nm);if(m)m.warns=parseInt(num.charAt(0));
+  renderMembers();renderWarnings();renderStats();
+  addLogEl(nm,'member',rnd(),'warn');
+  const isBan=num.includes('3/3');
+  const ok=await sendHook({embeds:[{title:`⚠️ إنذار ${num} — Moreeb RP`,color:isBan?0xe63946:0xf4a726,
+    fields:[{name:'👤 العضو',value:nm,inline:true},{name:'🔢 الإنذار',value:num,inline:true},{name:'📝 السبب',value:rsn,inline:false},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+    footer:{text:isBan?'🚫 يستوجب الباند':'Moreeb RP'},timestamp:new Date().toISOString()}]});
+  cM('mAW');document.getElementById('wRsn').value='';saveLS();
+  toast(ok?`تم إرسال إنذار ${nm} ✅`:`تم الإنذار`,'w');
+  if(isBan)setTimeout(()=>toast(`⛔ ${nm} — 3 إنذارات! يستوجب الباند`,'e'),800);
+}
+function renderWarnings(){
+  const c=document.getElementById('wCont');
+  if(!warnings.length){c.innerHTML='<div class="empty">لا توجد إنذارات</div>';return;}
+  c.innerHTML='';
+  [...warnings].reverse().forEach(w=>{
+    const isBan=w.num.includes('3/3');
+    const d=document.createElement('div');d.className='wi';
+    d.innerHTML=`<div class="wh"><span class="wn2">${w.name}</span><span class="wc" style="${isBan?'background:#e63946;color:#fff;':''}">${w.num}</span></div>
+      <div class="wr">سبب: ${w.reason}</div><div class="wd">📅 ${w.time}</div>`;
+    c.appendChild(d);
+  });
+}
+
+// ════════════════════════════════════
+// RULES
+// ════════════════════════════════════
+let rules=['احترام جميع الأعضاء والإدارة','الالتزام بقوانين الـ RP كاملاً','ممنوع السباب أو التجريح','3 إنذارات = باند تلقائي','تنفيذ تعليمات الإدارة فوراً'];
+function renderRules(){
+  const c=document.getElementById('rlsCont');c.innerHTML='';
+  rules.forEach((r,i)=>{
+    const d=document.createElement('div');d.className='rli';
+    d.innerHTML=`<div class="rln">${i+1}</div><div class="rlt">${r}</div>
+      ${hp('editRules')?`<button class="rld" onclick="delRule(${i})">🗑</button>`:''}`;
+    c.appendChild(d);
+  });
+  document.getElementById('cfgSN')&&(document.getElementById('cfgSN').value=CFG.srvName);
+}
+function delRule(i){if(!hp('editRules')){toast('ما عندك صلاحية','e');return;}rules.splice(i,1);renderRules();saveLS();}
+function addRule(){
+  if(!hp('editRules')){toast('ما عندك صلاحية','e');return;}
+  const t=document.getElementById('rlTxt').value.trim();
+  if(!t){toast('اكتب نص القانون','e');return;}
+  rules.push(t);renderRules();document.getElementById('rlTxt').value='';cM('mARule');saveLS();toast('تمت إضافة القانون','s');
+}
+
+// ════════════════════════════════════
+// ROLES MANAGEMENT
+// ════════════════════════════════════
+function buildSelects(){
+  const opts=ROLES.map(r=>`<option value="${r.key}">${r.emoji} ${r.label}</option>`).join('');
+  ['inRl','crRl','asnRl'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+}
+function renderRoles(){
+  const c=document.getElementById('rlEl');c.innerHTML='';
+  const can=hp('manageRoles');
+  ROLES.forEach(r=>{
+    const d=document.createElement('div');d.className='rci';
+    const pOn=PD.filter(p=>r.perms[p.key]).map(p=>`<span class="pt3 on">✓ ${p.label}</span>`).join('');
+    const pOff=PD.filter(p=>!r.perms[p.key]).map(p=>`<span class="pt3">✗ ${p.label}</span>`).join('');
+    d.innerHTML=`
+      <div class="rcr">
+        <div class="rcl">
+          <div class="rcd" style="background:${r.color};"></div>
+          <span style="font-size:18px;">${r.emoji}</span>
+          <span class="rcn">${r.label}</span>
+        </div>
+        <div style="display:flex;gap:7px;">
+          ${can?`<button class="bs br2" onclick="openER('${r.key}')">✏️ تعديل</button>`:''}
+          ${can&&!r.builtin?`<button class="bs bk" onclick="delRole('${r.key}')">🗑</button>`:''}
+        </div>
+      </div>
+      <div class="rkb">
+        <span style="font-size:12px;color:var(--td);flex-shrink:0;">🔑 الكود:</span>
+        <span id="rcb_${r.key}" style="font-size:12px;color:var(--gold);font-family:monospace;letter-spacing:1px;">${'•'.repeat(r.code.length)}</span>
+        <button class="rkcb" onclick="toggleCode('${r.key}','${r.code}',this)">👁</button>
+        <button class="rkcopy" onclick="cpCode('${r.code}')">نسخ</button>
+      </div>
+      <div class="pt2">${pOn}${pOff}</div>`;
+    c.appendChild(d);
+  });
+}
+function toggleCode(key,code,btn){
+  const el=document.getElementById('rcb_'+key);
+  if(el.textContent.includes('•')){el.textContent=code;btn.textContent='🙈';}
+  else{el.textContent='•'.repeat(code.length);btn.textContent='👁';}
+}
+function cpCode(code){
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  toast('تم نسخ الكود ✅','i');
+}
+function renderPM(){
+  const t=document.getElementById('pmTbl');
+  const cols=ROLES.slice(0,5);
+  t.innerHTML=`<tr><th>الصلاحية</th>${cols.map(r=>`<th>${r.emoji}<br><span style="font-size:10px;">${r.label}</span></th>`).join('')}</tr>`
+    +PD.map(p=>`<tr><td>${p.label}</td>${cols.map(r=>`<td style="text-align:center;">${r.perms[p.key]?'<span style="color:var(--on);">✓</span>':'<span style="color:var(--red);font-size:12px;">✗</span>'}</td>`).join('')}</tr>`).join('');
+}
+function buildPGrid(containerId,existing={}){
+  document.getElementById(containerId).innerHTML=PD.map(p=>`
+    <label style="display:flex;align-items:center;gap:8px;background:var(--s2);padding:8px 10px;border-radius:8px;border:1px solid ${existing[p.key]?'rgba(60,186,111,.3)':'var(--br)'};cursor:pointer;font-size:12px;color:var(--tx);">
+      <input type="checkbox" id="cp_${containerId}_${p.key}" ${existing[p.key]?'checked':''} style="accent-color:var(--red);width:14px;height:14px;">
+      ${p.label}</label>`).join('');
+}
+function getPermsFrom(containerId){
+  const p={};PD.forEach(pd=>{p[pd.key]=document.getElementById(`cp_${containerId}_${pd.key}`)?.checked||false;});return p;
+}
+
+// ADD ROLE
+function addCustomRole(){
+  const nm=document.getElementById('rnNm').value.trim();
+  const em=document.getElementById('rnEm').value.trim()||'🔵';
+  const clr=document.getElementById('rnClr').value;
+  const cd=document.getElementById('rnCd').value.trim();
+  if(!nm){toast('ادخل اسم الرتبة','e');return;}
+  if(!cd){toast('ادخل كود الرتبة','e');return;}
+  if(ROLES.find(r=>r.code===cd)){toast('الكود مستخدم من رتبة أخرى','e');return;}
+  const key='cr_'+Date.now();
+  const perms=getPermsFrom('nrPg');
+  ROLES.splice(ROLES.length-1,0,{key,label:nm,emoji:em,color:clr,code:cd,perms,builtin:false});
+  buildSelects();renderRoles();renderPM();cM('mAddRole');
+  document.getElementById('rnNm').value='';document.getElementById('rnEm').value='';document.getElementById('rnCd').value='';
+  saveLS();toast(`تمت إضافة رتبة ${nm} ✅`,'s');
+}
+function delRole(key){
+  if(!confirm('حذف هذه الرتبة؟'))return;
+  ROLES=ROLES.filter(r=>r.key!==key);
+  buildSelects();renderRoles();renderPM();saveLS();toast('تم حذف الرتبة','w');
+}
+
+// EDIT ROLE
+function openER(key){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const r=gR(key);
+  document.getElementById('erKey').value=key;
+  document.getElementById('erTitle').textContent=`${r.emoji} ${r.label}`;
+  document.getElementById('erNm').value=r.label;
+  document.getElementById('erEm').value=r.emoji;
+  document.getElementById('erClr').value=r.color;
+  document.getElementById('erCd').value=r.code;
+  document.getElementById('erCd').type='password';
+  buildPGrid('erPg',r.perms);
+  if(key==='owner')document.querySelectorAll('#erPg input').forEach(e=>e.disabled=true);
+  oM('mER');
+}
+function saveER(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const key=document.getElementById('erKey').value;
+  const r=ROLES.find(x=>x.key===key);if(!r)return;
+  const nm=document.getElementById('erNm').value.trim();
+  const em=document.getElementById('erEm').value.trim();
+  const clr=document.getElementById('erClr').value;
+  const cd=document.getElementById('erCd').value.trim();
+  if(!nm){toast('ادخل اسم الرتبة','e');return;}
+  if(!cd){toast('ادخل كود الرتبة','e');return;}
+  if(ROLES.find(x=>x.code===cd&&x.key!==key)){toast('الكود مستخدم من رتبة أخرى','e');return;}
+  const oldCd=r.code;
+  r.label=nm;r.emoji=em||r.emoji;r.color=clr;r.code=cd;
+  if(key==='owner')CFG.ownerCode=cd;
+  if(key!=='owner')r.perms=getPermsFrom('erPg');
+  buildSelects();renderRoles();renderPM();cM('mER');saveLS();
+  toast(`تم حفظ تعديلات رتبة ${nm} ✅${oldCd!==cd?' — الكود تغيّر':''}`,'s');
+}
+
+// MANAGE CODES
+function openMC(){
+  document.getElementById('mcTbl').innerHTML=ROLES.map(r=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--br);">
+      <div style="display:flex;align-items:center;gap:10px;"><span>${r.emoji}</span><span style="font-size:13px;font-weight:700;color:#fff;">${r.label}</span></div>
+      <div class="pinput" style="width:200px;"><input class="fi" data-key="${r.key}" value="${r.code}" type="password" style="direction:ltr;font-size:12px;padding-left:32px;"><button class="peye" onclick="togglePw(null,this)" style="font-size:13px;" data-inp="true">👁</button></div>
+    </div>`).join('');
+  // Fix eye buttons that use data-inp
+  document.querySelectorAll('#mcTbl .peye[data-inp]').forEach(btn=>{
+    btn.onclick=function(){const i=this.previousElementSibling;i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈';};
+  });
+  oM('mMC');
+}
+function saveCodes(){
+  document.querySelectorAll('#mcTbl input[data-key]').forEach(inp=>{
+    const r=ROLES.find(x=>x.key===inp.dataset.key);
+    if(r&&inp.value.trim()){
+      r.code=inp.value.trim();
+      if(r.key==='owner')CFG.ownerCode=r.code;
+    }
+  });
+  renderRoles();cM('mMC');saveLS();toast('تم حفظ الأكواد ✅','s');
+}
+
+// ════════════════════════════════════
+// TICKETS
+// ════════════════════════════════════
+const TK_TYPES={'role':'🎖️ مشكلة رتبة','ban':'🚫 ظلم/باند','report':'📢 بلاغ','support':'💬 دعم','other':'📋 أخرى'};
+async function addTicket(){
+  const nm=document.getElementById('tkNm').value.trim();
+  const type=document.getElementById('tkType').value;
+  const msg=document.getElementById('tkMsg').value.trim();
+  if(!nm){toast('ادخل موضوع التكت','e');return;}
+  if(!msg){toast('اكتب تفاصيل المشكلة','e');return;}
+  try{
+    const r=await fetch(CFG.workerUrl+'/tickets',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({title:nm,type,msg,author:CU?.name||'مجهول'})});
+    const data=await r.json();
+    if(data.ok){
+      await loadTicketsFromWorker();
+      await sendHook({embeds:[{title:`🎫 تكت جديد ${data.id} — Moreeb RP`,color:0x4a90e2,
+        fields:[{name:'📌 الموضوع',value:nm,inline:true},{name:'🔖 النوع',value:TK_TYPES[type],inline:true},{name:'👤 من',value:CU?.name||'مجهول',inline:true},{name:'📝 التفاصيل',value:msg.slice(0,200),inline:false}],
+        footer:{text:'Moreeb RP — نظام التكتات'},timestamp:new Date().toISOString()}]});
+      cM('mAT');document.getElementById('tkNm').value='';document.getElementById('tkMsg').value='';
+      toast(`تم فتح التكت ${data.id} ✅`,'s');
+    }
+  }catch(e){toast('خطأ في الاتصال بالـ Worker','e');}
+}
+
+async function loadTicketsFromWorker(){
+  try{
+    const r=await fetch(CFG.workerUrl+'/tickets');
+    const data=await r.json();
+    if(Array.isArray(data)){
+      tickets=data;
+      renderTickets();renderStats();
+    }
+  }catch(e){console.error('load tickets error',e);}
+}
+function renderTickets(){
+  const f=document.getElementById('tkFilter').value;
+  const c=document.getElementById('tkCont');c.innerHTML='';
+  const filtered=f==='all'?tickets:tickets.filter(t=>t.status===f);
+  if(!filtered.length){c.innerHTML='<div class="empty">لا توجد تكتات</div>';return;}
+  [...filtered].reverse().forEach(tk=>{
+    const d=document.createElement('div');d.className='tki';d.onclick=()=>openTK(tk.id);
+    const sc={open:'open',closed:'closed',pending:'pending'}[tk.status]||'open';
+    const sl={open:'مفتوح 🟢',closed:'مغلق 🔒',pending:'قيد الانتظار ⏳'}[tk.status];
+    d.innerHTML=`<div class="tkh"><span class="tkn">${tk.id} — ${tk.title}</span><span class="tks ${sc}">${sl}</span></div>
+      <div class="tkb">${TK_TYPES[tk.type]} | 👤 ${tk.author} | 💬 ${tk.msgs.length} رسائل</div>
+      <div class="tkt">🕐 ${tk.time}</div>`;
+    c.appendChild(d);
+  });
+}
+function openTK(id){
+  const tk=tickets.find(t=>t.id===id);if(!tk)return;
+  tkTarget=id;
+  document.getElementById('tdTitle').textContent=`${tk.id} — ${tk.title}`;
+  document.getElementById('tdMeta').textContent=`${TK_TYPES[tk.type]} | 👤 ${tk.author} | 🕐 ${tk.time}`;
+  const sc={open:'مفتوح 🟢',closed:'مغلق 🔒',pending:'قيد الانتظار ⏳'}[tk.status];
+  const scls={open:'open',closed:'closed',pending:'pending'}[tk.status];
+  document.getElementById('tdStatus').innerHTML=`<span class="tks ${scls}">${sc}</span>`;
+  const mc=document.getElementById('tdMsgs');mc.innerHTML='';
+  tk.msgs.forEach(m=>{
+    const d=document.createElement('div');d.className=`tkdmsg ${m.isAdmin?'adm':'usr'}`;
+    d.innerHTML=`<div class="tkdwho">${m.isAdmin?'👮 ':''}<strong>${m.from}</strong> — ${m.time}</div>${m.text}`;
+    mc.appendChild(d);
+  });
+  mc.scrollTop=mc.scrollHeight;
+  document.getElementById('tdReply').style.display=hp('replyTicket')&&tk.status!=='closed'?'block':'none';
+  document.getElementById('btnClose').style.display=hp('manageRoles')||hp('settings')?'inline-flex':'none';
+  // زر إضافة عضو وتذكير
+  const extraBtns = document.getElementById('tdExtraBtns');
+  if(extraBtns){
+    extraBtns.style.display=hp('replyTicket')?'flex':'none';
+  }
+  oM('mTD');
+}
+async function replyTicket(){
+  if(!hp('replyTicket')){toast('ما عندك صلاحية','e');return;}
+  const txt=document.getElementById('tdRplyTxt').value.trim();
+  if(!txt){toast('اكتب الرد','e');return;}
+  try{
+    const r=await fetch(CFG.workerUrl+'/ticket/reply',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:tkTarget,from:CU?.name||'الإدارة',text:txt,isAdmin:true,status:'pending'})});
+    const data=await r.json();
+    if(data.ok){
+      await loadTicketsFromWorker();
+      const tk=tickets.find(t=>t.id===tkTarget);
+      if(tk) openTK(tkTarget);
+      const ok=await sendHook({embeds:[{title:`💬 رد على تكت ${tkTarget} — Moreeb RP`,color:0x4a90e2,
+        fields:[{name:'📌 التكت',value:tkTarget,inline:true},{name:'👮 الرد من',value:CU?.name||'الإدارة',inline:true},{name:'💬 الرد',value:txt.slice(0,300),inline:false}],
+        footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+      document.getElementById('tdRplyTxt').value='';
+      toast(ok?'تم إرسال الرد ✅':'تم حفظ الرد','s');
+    }
+  }catch(e){toast('خطأ في الاتصال','e');}
+}
+async function closeTicket(){
+  // حذف روم الديسكورد تلقائياً
+  try{
+    const tk=tickets.find(t=>t.id===tkTarget);
+    const r=await fetch(CFG.workerUrl+'/ticket/close',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:tkTarget})});
+    const data=await r.json();
+    if(data.ok){
+      await loadTicketsFromWorker();
+      cM('mTD');
+      logAction('ticket',`تم إغلاق تكت \${tkTarget}: \${tk?.title||'—'}`);
+      if(tk){await sendHook({embeds:[{title:`🔒 تكت مغلق ${tkTarget} — Moreeb RP`,color:0x7a7a9a,
+        fields:[{name:'📌 التكت',value:tk.title,inline:true},{name:'👮 أغلقه',value:CU?.name||'الإدارة',inline:true}],
+        footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});}
+      toast('تم إغلاق التكت','w');
+    }
+  }catch(e){toast('خطأ في الاتصال','e');}
+}
+
+// ════════════════════════════════════
+// SETTINGS SAVE
+// ════════════════════════════════════
+function saveSettings(){
+  if(!hp('settings')){toast('فقط الأونر يقدر يحفظ الإعدادات','e');return;}
+  CFG.webhook=document.getElementById('cfgWh').value.trim();
+  CFG.workerUrl=document.getElementById('cfgWu').value.trim()||CFG.workerUrl;
+  CFG.botToken=document.getElementById('cfgTk').value.trim();
+  CFG.guildId=document.getElementById('cfgGid').value.trim()||CFG.guildId;
+  CFG.ownerName=document.getElementById('cfgOn').value.trim()||CFG.ownerName;
+  const oc=document.getElementById('cfgOc').value.trim();
+  if(oc){CFG.ownerCode=oc;const or=ROLES.find(r=>r.key==='owner');if(or)or.code=oc;}
+  CFG.notifyLogin=document.getElementById('tgL').classList.contains('on');
+  CFG.notifyWarn=document.getElementById('tgW').classList.contains('on');
+  CFG.notifyRole=document.getElementById('tgR').classList.contains('on');
+  CFG.notifyTicket=document.getElementById('tgT').classList.contains('on');
+  CFG.allowMembers=document.getElementById('tgMem').classList.contains('on');
+  updateSrvName();updateSrvLogo();updateSrvDesc();
+  saveLS();toast('تم حفظ الإعدادات ✅','s');
+}
+
+// ════════════════════════════════════
+// SYNC HELPER
+// ════════════════════════════════════
+function hp2(rk, perm){
+  return ROLES.find(r=>r.key===rk)?.perms[perm] || rk === 'owner' || rk === 'admin';
+}
+
+async function syncFromDiscord(){
+  const btn = document.getElementById('btnSync');
+  if(btn){ btn.textContent='⏳ جاري المزامنة...'; btn.disabled=true; }
+  toast('جاري جلب البيانات من الديسكورد...', 'i');
+  const rolesOk = await fetchDiscordRoles();
+  if(rolesOk) await fetchDiscordMembers();
+  if(!rolesOk) toast('تعذّر الاتصال بالـ Worker ❌', 'e');
+  if(btn){ btn.textContent='🔄 مزامنة مع الديسكورد'; btn.disabled=false; }
+}
+
+// ════════════════════════════════════
+// DISCORD ROLE MANAGEMENT (تعيين/سحب حقيقي)
+// ════════════════════════════════════
+
+function buildDsRoleSelects(){
+  // ابنِ selects من رتب الديسكورد الحقيقية
+  const opts = discordRoles.map(r=>`<option value="${r.id}" data-color="${r.color}">${r.name}</option>`).join('');
+  ['asnRl','rmRlDs','giveAllSrc','giveAllTgt'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML = opts || '<option value="">لا توجد رتب من الديسكورد</option>';
+  });
+}
+
+function searchMember(){
+  const q = document.getElementById('asnNm').value.trim().toLowerCase();
+  showSuggestions('memberSuggestions', q, 'asnUserId', 'asnNm');
+}
+function searchMemberRm(){
+  const q = document.getElementById('rmNm').value.trim().toLowerCase();
+  showSuggestions('memberSuggestionsRm', q, 'rmUserId', 'rmNm');
+}
+function showSuggestions(containerId, q, hiddenId, inputId){
+  const c = document.getElementById(containerId);
+  if(!q || q.length < 1){ c.style.display='none'; return; }
+  const matches = discordMembers.filter(m=>{
+    const nm = m.nick || m.user?.global_name || m.user?.username || '';
+    return nm.toLowerCase().includes(q);
+  }).slice(0,5);
+  if(!matches.length){ c.style.display='none'; return; }
+  c.style.display='block';
+  c.innerHTML = matches.map(m=>{
+    const nm = m.nick || m.user?.global_name || m.user?.username || 'مجهول';
+    const uid = m.user?.id;
+    return `<div onclick="selectMember('${nm}','${uid}','${inputId}','${hiddenId}','${containerId}')"
+      style="padding:9px 14px;cursor:pointer;font-size:13px;color:#fff;border-bottom:1px solid var(--br);"
+      onmouseover="this.style.background='var(--s2)'" onmouseout="this.style.background='transparent'">
+      👤 ${nm} <span style="font-size:11px;color:var(--td);">#${uid?.slice(-4)}</span>
+    </div>`;
+  }).join('');
+}
+function selectMember(name, uid, inputId, hiddenId, containerId){
+  document.getElementById(inputId).value = name;
+  document.getElementById(hiddenId).value = uid;
+  document.getElementById(containerId).style.display='none';
+}
+
+async function assignRoleDS(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const userId = document.getElementById('asnUserId').value;
+  const memberName = document.getElementById('asnNm').value.trim();
+  const roleEl = document.getElementById('asnRl');
+  const roleId = roleEl.value;
+  const roleName = roleEl.options[roleEl.selectedIndex]?.text || '';
+  if(!userId){toast('اختر العضو من القائمة','e');return;}
+  if(!roleId){toast('اختر الرتبة','e');return;}
+  
+  document.getElementById('asnStatus').textContent = '⏳ جاري التعيين...';
+  document.getElementById('asnStatus').style.color = 'var(--gold)';
+  
+  try{
+    const r = await fetch(CFG.workerUrl+'/role/give',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({userId, roleId, memberName, roleName, by: CU?.name})
+    });
+    const data = await r.json();
+    if(data.ok){
+      // حدّث في الموقع
+      const m = members.find(x=>x.name===memberName||x.discordId===userId);
+      if(m){ m.role='ds_'+roleId; renderMembers(); }
+      document.getElementById('asnStatus').textContent = `✅ تم تعيين ${roleName} لـ ${memberName} في الديسكورد`;
+      document.getElementById('asnStatus').style.color = 'var(--on)';
+      await sendHook({embeds:[{title:`🎖️ تعيين رتبة — Moreeb RP`,color:0x4a90e2,
+        fields:[{name:'👤 العضو',value:memberName,inline:true},{name:'🎖️ الرتبة',value:roleName,inline:true},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+        footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+      saveLS();
+      toast(`✅ تم تعيين ${roleName} لـ ${memberName} في الديسكورد`,'s');
+    } else {
+      document.getElementById('asnStatus').textContent = `❌ فشل التعيين (${data.status}) — تأكد البوت عنده صلاحية Manage Roles`;
+      document.getElementById('asnStatus').style.color = 'var(--red)';
+      toast('فشل التعيين في الديسكورد ❌','e');
+    }
+  }catch(e){
+    document.getElementById('asnStatus').textContent = '❌ خطأ في الاتصال بالـ Worker';
+    document.getElementById('asnStatus').style.color = 'var(--red)';
+    toast('خطأ في الاتصال','e');
+  }
+}
+
+async function removeRoleDS(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const userId = document.getElementById('rmUserId').value;
+  const memberName = document.getElementById('rmNm').value.trim();
+  const roleEl = document.getElementById('rmRlDs');
+  const roleId = roleEl.value;
+  const roleName = roleEl.options[roleEl.selectedIndex]?.text || '';
+  if(!userId){toast('اختر العضو من القائمة','e');return;}
+  if(!roleId){toast('اختر الرتبة','e');return;}
+
+  try{
+    const r = await fetch(CFG.workerUrl+'/role/remove',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({userId, roleId, memberName, roleName, by: CU?.name})
+    });
+    const data = await r.json();
+    if(data.ok){
+      await sendHook({embeds:[{title:`🔴 سحب رتبة — Moreeb RP`,color:0xe63946,
+        fields:[{name:'👤 العضو',value:memberName,inline:true},{name:'🎖️ الرتبة المسحوبة',value:roleName,inline:true},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+        footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+      saveLS();
+      toast(`✅ تم سحب ${roleName} من ${memberName} في الديسكورد`,'s');
+    } else {
+      toast('فشل سحب الرتبة ❌','e');
+    }
+  }catch(e){ toast('خطأ في الاتصال','e'); }
+}
+
+async function giveRoleToAll(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const srcEl = document.getElementById('giveAllSrc');
+  const tgtEl = document.getElementById('giveAllTgt');
+  const srcId = srcEl.value, srcNm = srcEl.options[srcEl.selectedIndex]?.text;
+  const tgtId = tgtEl.value, tgtNm = tgtEl.options[tgtEl.selectedIndex]?.text;
+  if(!srcId||!tgtId){toast('اختر الرتبتين','e');return;}
+  if(srcId===tgtId){toast('الرتبتان متطابقتان','e');return;}
+
+  const btn = document.getElementById('btnGiveAll');
+  const status = document.getElementById('giveAllStatus');
+  btn.disabled=true; btn.textContent='⏳ جاري الإعطاء...';
+  status.textContent='⏳ جاري إعطاء الرتبة لكل الأعضاء...';
+  status.style.color='var(--gold)';
+
+  try{
+    const r = await fetch(CFG.workerUrl+'/role/give-all',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({sourceRoleId:srcId, targetRoleId:tgtId})
+    });
+    const data = await r.json();
+    if(data.ok){
+      status.textContent = `✅ تم إعطاء ${tgtNm} لـ ${data.given} عضو من رتبة ${srcNm}`;
+      status.style.color = 'var(--on)';
+      await sendHook({embeds:[{title:`🎖️ إعطاء رتبة جماعية — Moreeb RP`,color:0x4a90e2,
+        fields:[
+          {name:'👥 من رتبة',value:srcNm,inline:true},
+          {name:'🎖️ الرتبة المعطاة',value:tgtNm,inline:true},
+          {name:'✅ عدد الأعضاء',value:`${data.given} / ${data.total}`,inline:true},
+          {name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}
+        ],
+        footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+      toast(`✅ تم إعطاء ${tgtNm} لـ ${data.given} عضو`,'s');
+    } else {
+      status.textContent='❌ فشل الإعطاء';status.style.color='var(--red)';
+      toast('فشل الإعطاء الجماعي ❌','e');
+    }
+  }catch(e){
+    status.textContent='❌ خطأ في الاتصال';status.style.color='var(--red)';
+    toast('خطأ في الاتصال','e');
+  }
+  btn.disabled=false; btn.textContent='⭐ إعطاء الرتبة لكل أعضاء الرتبة المصدر';
+}
+
+// ════════════════════════════════════
+// ROLE CATEGORIES (من الديسكورد)
+// ════════════════════════════════════
+// rewardRoleId = الرتبة اللي تنضاف في الديسكورد لما تعطي نقاط من هذا الكاتيقوري
+const ROLE_CATS = [
+  { name:'High Staff', emoji:'👑', color:'#ffd700', rewardRoleId:'1133132747817373767',
+    ids:['1133132747817373767','1451164912419340318','1133132714254532618','1133132433164861610','1133132744533229668','597202754582085643','1204475906484215888','689744605767401513','712094882445131857','591295796801044481','1376676627605491963','689744319770394639','1428401628066873475','1428400566404518031','1428400162530791495','1434484729880641556','1428400562180853770','1392123307477831800','998336373285204008','636116133002477568']},
+  { name:'Staff', emoji:'🎖️', color:'#e63946', rewardRoleId:'1464242575647969425',
+    ids:['1464242575647969425','1464242569847246911','589881434739703841','1150893069001031701','1434485054695931988','1426826788599894056','1426827162647789690','1426828274696323225','1464242573320126636','1426828959143690281','1426829288660926635','1426829536074534932']},
+  { name:'النقاط الإدارية', emoji:'⭐', color:'#f4a726', rewardRoleId:'1426833412647424073',
+    ids:['1426833412647424073','1426833416870953001','1426833424357920789']},
+  { name:'الإنذارات الإدارية', emoji:'⚠️', color:'#ff6b35', rewardRoleId:'1426862867344396358',
+    ids:['1426862867344396358','1426848830191566911','1426849035301552229','1426838319504953354','1426830332891631738','1426830026497589281']},
+  { name:'الإجازات والاجتماع', emoji:'📅', color:'#3cba6f', rewardRoleId:'1426840561444323368',
+    ids:['1426840561444323368','1429176714658844853','1426841879978180729']},
+  { name:'المتجر', emoji:'🛒', color:'#9b59b6', rewardRoleId:'1426829509813997668',
+    ids:['1426829509813997668','1480709564876984372','1480708871050756301','1480707575186980934','1480706583053996094','1480705998476939337','1480704908046110841','1478483154443698398']},
+  { name:'المسؤوليات', emoji:'📋', color:'#4a90e2', rewardRoleId:'896542734838558760',
+    ids:['896542734838558760','998362058938667058','896592838039580672','1338850953792851968','1426830027571331163','1426830324477853756','1426834605742493717','985221969026900049','1384981734575181924','1426888076688359487','1427057343933448323','1240362451539857479','1176632890004602880','1177728104215617659','1426834601694728283','1002348871239864410','1136715211424923688','998387860401045594','1389371765704229025','618054971522285578','1243346108797681774']},
+  { name:'أصدقاء', emoji:'🤝', color:'#1abc9c', rewardRoleId:'1344006472400375828',
+    ids:['1344006472400375828','1132485310442385540']},
+  { name:'الأسرة الحاكمة', emoji:'👑', color:'#ffd700', rewardRoleId:'1016102226579693648',
+    ids:['1016102226579693648','998349148883517440','998353776215867532','1173341082558419145','1008716864546947092','1233136118212329573','998354006042759271','998353570778845274','1231331638173110322','1442947979727212676','1233054620343996446','998339688983187546']},
+  { name:'وزارة الدفاع', emoji:'⚔️', color:'#e63946', rewardRoleId:'998339688983187546',
+    ids:['998339688983187546','1429025390688604170','1036199098388328529','998370703600517150','998370711544528896','1490458393549209621','998370715306819734','1141038521306591353','1397178871433920602','1397292426007154790','1136382008378011778','1398304340682477780','1005207045131206727','1398304203922735216','1005207265353158677','1398304432155922442','1004969943441363025','998370721451479071','998370731639447582','1192537414820958371','1397249192992440433','998370734504157194','1267556665633280062']},
+  { name:'وزارة الداخلية', emoji:'🏛️', color:'#4a90e2', rewardRoleId:'998354371840573501',
+    ids:['998354371840573501','1016871753005404241','1146155325620236378','1460704484207366167','1027090314407718972','998354980668977233','998355256125694082','998355216682459207','1495392151935123538','1238978618370162781','998355124097400832','998355292666478612','998355075837743234','1335701849449168978','1335703963810529370','1335703622842843217']},
+  { name:'التحريات', emoji:'🔍', color:'#7a7a9a', rewardRoleId:'1020108741431013417',
+    ids:['1020108741431013417','1020109057614413864','1238230219882500157','1020109761536077835','1020109248560111697']},
+  { name:'الرتب العسكرية', emoji:'🪖', color:'#5d4037', rewardRoleId:'1133866171683319839',
+    ids:['1133866171683319839','708070807896588330','708070736094298153','708164715372871740','708166718698291211','708164303655665695','708164173418332181','998412207492698182','708163540175028265','708163273215967233','708163018500079666','708162650009239552','998358820965322883','998355762860539985','708162388633059338','998411618318831658','758051668309966941','998411524509020180','765907845836832770','998358843874619483','998358810991263834']},
+  { name:'قطاعات الدفاع', emoji:'🛡️', color:'#c0392b', rewardRoleId:'1240298433793753149',
+    ids:['1240298433793753149','998991347279212675','1005207442352775218','1005207528440856636','1411760171893522472','1400535162428719155','998341754719834202']},
+  { name:'قطاعات الداخلية', emoji:'🏢', color:'#2980b9', rewardRoleId:'1460705191308427453',
+    ids:['1460705191308427453','1414217040088141834']},
+  { name:'قطاعات التحريات', emoji:'🕵️', color:'#616161', rewardRoleId:'1020100964545474612',
+    ids:['1020100964545474612']},
+  { name:'نقاط القطاعات', emoji:'📊', color:'#f4a726', rewardRoleId:'1424387065562534061',
+    ids:['1424387065562534061','1422568119955750912']},
+  { name:'رتب البلاك ماركت', emoji:'🖤', color:'#212121', rewardRoleId:'998362032644567100',
+    ids:['998362032644567100','998362035324731473','998362038038429726','1424432283812892733','998351546469326858','1424455138495434882','998362043159691424','998362053377019984','998362048104775830']},
+  { name:'قطاعات البلاك', emoji:'⚫', color:'#1a1a1a', rewardRoleId:'998347779334221864',
+    ids:['998347779334221864']},
+  { name:'حكام العصابات', emoji:'👔', color:'#6d4c41', rewardRoleId:'1338271875071082506',
+    ids:['1338271875071082506']},
+  { name:'فوبيا', emoji:'💀', color:'#4a148c', rewardRoleId:'1462783446991503503',
+    ids:['1462783446991503503','1462783500125208749','998345883978571867','1467189921482543380','1476718025758736434','1476718705046978662','1476719045922390268','1476719658496430322']},
+  { name:'العصابات', emoji:'🔫', color:'#b71c1c', rewardRoleId:'1161992772119691265',
+    ids:['1161992772119691265','998345675223879790','1161992834103136276','1388869159479414896']},
+  { name:'مجلة الإجرام', emoji:'📰', color:'#37474f', rewardRoleId:'998362056229146785',
+    ids:['998362056229146785']},
+  { name:'قراج', emoji:'🔧', color:'#546e7a', rewardRoleId:'1392168713494724691',
+    ids:['1392168713494724691','1392167675756544031']},
+  { name:'إجازة وظيفية', emoji:'🏖️', color:'#00838f', rewardRoleId:'998411866609045505',
+    ids:['998411866609045505']},
+  { name:'مسؤوليات العصابات', emoji:'📌', color:'#8d1a1a', rewardRoleId:'1163167593700528228',
+    ids:['1163167593700528228','1002312581123416064','998386575874470000','998364389403021383']},
+  { name:'التقاعد', emoji:'🎖️', color:'#607d8b', rewardRoleId:'1070425384337801306',
+    ids:['1070425384337801306','1385354353430495302']},
+  { name:'الإنذارات الوظيفية', emoji:'🚨', color:'#d32f2f', rewardRoleId:'1385290608251244725',
+    ids:['1385290608251244725','998364673122504774','1385352365254770699','1385352864246927481']},
+];
+
+// رتبة المكافأة = أول رتبة في كل كاتيقوري تنضاف للعضو عند إعطاء النقاط
+// كل كاتيقوري: rewardRoleId = الرتبة اللي تنضاف في الديسكورد
+
+let selectedCatIndex = null;
+let selectedRoleId = null;
+let selectedRoleName = '';
+let attendees = []; // قائمة الحاضرين
+
+// ════════════════════════════════════
+// POINTS SYSTEM
+// ════════════════════════════════════
+let pointsData = {}; // {name: {points, logs:[]}}
+let ptsTypeFilter = 'all';
+
+function updatePtsRoleSelect(){
+  // not needed anymore — using categories
+}
+
+function renderPtsCats(){
+  const c = document.getElementById('ptsCats');
+  if(!c) return;
+  c.innerHTML = ROLE_CATS.map((cat,i) => `
+    <div class="cd" style="cursor:pointer;padding:14px;text-align:center;transition:border-color .2s;border-color:${selectedCatIndex===i?'rgba(244,167,38,.5)':'var(--br)'};" 
+         onclick="openCat(${i})" id="ptsCat_${i}">
+      <div style="font-size:26px;">${cat.emoji}</div>
+      <div style="font-size:12px;font-weight:700;color:#fff;margin-top:6px;line-height:1.3;">${cat.name}</div>
+      <div style="font-size:10px;color:var(--td);margin-top:3px;">${cat.ids.length} رتبة</div>
+    </div>`).join('');
+}
+
+function closePtsPanel(){
+  document.getElementById('ptsRolesPanel').style.display='none';
+  selectedCatIndex=null;
+  renderPtsCats();
+}
+
+// الرتبة المختارة للإعطاء
+let selectedGiveRoleId = null;
+let selectedGiveRoleName = '';
+
+function openCat(i){
+  selectedCatIndex = i;
+  selectedGiveRoleId = null;
+  selectedGiveRoleName = '';
+  const cat = ROLE_CATS[i];
+  renderPtsCats();
+
+  // عرض رتب الكاتيقوري فقط
+  const catRoleIds = cat.ids;
+  const catDiscordRoles = discordRoles.filter(r => catRoleIds.includes(r.id));
+  // لو ما لقينا رتب من الديسكورد، اعرض الـ IDs
+  const rolesToShow = catDiscordRoles.length > 0
+    ? catDiscordRoles
+    : catRoleIds.map(id => ({ id, name: id, color: 0 }));
+
+  const btnsEl = document.getElementById('catRoleButtons');
+  btnsEl.innerHTML = rolesToShow.map(r => {
+    const hexColor = r.color ? '#' + r.color.toString(16).padStart(6,'0') : cat.color;
+    return `<button class="btn" id="rbtn_${r.id}" onclick="selectCatRole('${r.id}','${r.name.replace(/'/g,"\'")}','${hexColor}')"
+      style="background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:12px;padding:6px 14px;transition:all .2s;">
+      ${r.name}
+    </button>`;
+  }).join('');
+
+  // reset steps
+  document.getElementById('step1').style.display='block';
+  document.getElementById('step2').style.display='none';
+  document.getElementById('giveResult').style.display='none';
+  document.getElementById('ptsPanelTitle').textContent=`${cat.emoji} ${cat.name}`;
+  document.getElementById('ptsRolesPanel').style.display='block';
+  document.getElementById('ptsRolesPanel').scrollIntoView({behavior:'smooth'});
+}
+
+function selectCatRole(id, name, color){
+  selectedGiveRoleId = id;
+  selectedGiveRoleName = name;
+  // highlight الزر المختار
+  document.querySelectorAll('#catRoleButtons button').forEach(b=>{
+    b.style.background='rgba(0,0,0,.2)';
+    b.style.borderColor='rgba(255,255,255,.15)';
+    b.style.color='#fff';
+  });
+  const btn = document.getElementById('rbtn_'+id);
+  if(btn){
+    btn.style.background=`rgba(${hexToRgb(color)},.25)`;
+    btn.style.borderColor=color;
+    btn.style.color=color;
+  }
+  // انتقل لـ step2 مباشرة
+  goStep2();
+}
+
+let catMembersData = [];
+
+function goStep2(){
+  const s2selGive = document.getElementById('step2RoleSelect');
+  const roleId = s2selGive?.value || selectedGiveRoleId;
+  const roleName = s2selGive?.options[s2selGive?.selectedIndex]?.text || selectedGiveRoleName;
+  const cat = ROLE_CATS[selectedCatIndex];
+
+  document.getElementById('giveRoleName').textContent = roleName;
+  document.getElementById('step1').style.display='none';
+  document.getElementById('step2').style.display='block';
+  document.getElementById('giveResult').style.display='none';
+
+  // فلتر الأعضاء اللي عندهم الرتبة المختارة تحديداً
+  catMembersData = discordMembers.filter(m=>{
+    if(!m.roles || !m.roles.length) return false;
+    return m.roles.some(r => String(r) === String(roleId));
+  });
+
+  const countEl = document.getElementById('catMembersCount');
+  if(!catMembersData.length && discordMembers.length){
+    // لو ما لقينا بالرتبة المحددة، فلتر بكل رتب الكاتيقوري
+    catMembersData = discordMembers.filter(m=>{
+      if(!m.roles||!m.roles.length) return false;
+      return cat.ids.some(catId=>m.roles.some(r=>String(r)===String(catId)));
+    });
+    countEl.textContent = `${catMembersData.length} عضو عندهم رتب من ${cat.name}`;
+  } else {
+    countEl.textContent = `${catMembersData.length} عضو عندهم رتبة: ${roleName}`;
+  }
+
+  // عبّي قائمة الرتب في Step2
+  const s2selEl = document.getElementById('step2RoleSelect');
+  if(s2selEl && discordRoles.length){
+    const sorted = [...discordRoles].filter(r=>r.name!=='@everyone').sort((a,b)=>b.position-a.position);
+    s2selEl.innerHTML = sorted.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+  } else if(s2selEl){
+    s2selEl.innerHTML = '<option value="">لا توجد رتب — سوّ مزامنة أولاً</option>';
+  }
+
+  renderMembersCheckboxes();
+}
+
+function renderMembersCheckboxes(){
+  const listEl = document.getElementById('catMembersList');
+  if(!catMembersData.length){
+    listEl.innerHTML='<span style="color:var(--td);font-size:12px;grid-column:1/-1;">لم يتم جلب الأعضاء — اضغط 🔄 مزامنة أولاً</span>';
+    return;
+  }
+  listEl.innerHTML = catMembersData.map((m,i)=>{
+    const name = m.nick||m.user?.global_name||m.user?.username||'مجهول';
+    return `<label style="display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--br);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:13px;color:#fff;transition:border-color .2s;" 
+      onmouseover="this.style.borderColor='rgba(230,57,70,.4)'" onmouseout="this.style.borderColor='var(--br)'">
+      <input type="checkbox" id="chk_${i}" data-idx="${i}" checked style="accent-color:var(--red);width:15px;height:15px;cursor:pointer;">
+      <span>${name}</span>
+    </label>`;
+  }).join('');
+  updateSelectedCount();
+  // update count on change
+  listEl.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change', updateSelectedCount);
+  });
+}
+
+function updateSelectedCount(){
+  const total = catMembersData.length;
+  const selected = document.querySelectorAll('#catMembersList input:checked').length;
+  document.getElementById('catMembersCount').textContent = `${total} عضو — محدد: ${selected}`;
+}
+
+function selectAllMembers(val){
+  document.querySelectorAll('#catMembersList input[type=checkbox]').forEach(cb=>cb.checked=val);
+  updateSelectedCount();
+}
+
+async function giveRoleToSelected(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const roleId = selectedGiveRoleId;
+  const roleName = selectedGiveRoleName;
+  const cat = ROLE_CATS[selectedCatIndex];
+
+  // الأعضاء المحددين فقط
+  const checkedBoxes = document.querySelectorAll('#catMembersList input:checked');
+  const selectedMembers = Array.from(checkedBoxes).map(cb=>{
+    const idx = parseInt(cb.dataset.idx);
+    return catMembersData[idx];
+  }).filter(m=>m);
+
+  if(!selectedMembers.length){
+    toast('ما حددت أي عضو','w');
+    return;
+  }
+
+  const btn = document.querySelector('#step2 .btn.bp');
+  if(btn){btn.textContent='⏳ جاري الإعطاء...';btn.disabled=true;}
+  toast(`جاري إعطاء ${roleName} لـ ${selectedMembers.length} عضو...`,'i');
+
+  let given=0, failed=0;
+  const successNames = [];
+  for(const m of selectedMembers){
+    const name = m.nick||m.user?.global_name||m.user?.username||'مجهول';
+    try{
+      const res = await fetch(CFG.workerUrl+'/role/give',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({userId:m.user.id, roleId, memberName:name, roleName, by:CU?.name})
+      });
+      const d = await res.json();
+      if(d.ok){given++;successNames.push(name);}
+      else failed++;
+    }catch{failed++;}
+  }
+
+  if(btn){btn.textContent='🚀 إعطاء للمحددين';btn.disabled=false;}
+
+  const resEl = document.getElementById('giveResult');
+  resEl.style.display='block';
+  resEl.innerHTML=`✅ تم إعطاء <strong>${roleName}</strong> لـ <strong>${given}</strong> عضو${failed?` — فشل ${failed}`:''}<br>
+    <span style="font-size:11px;color:var(--td);">${successNames.join('، ')}</span>`;
+
+  await sendHook({embeds:[{
+    title:`🎖️ إعطاء رتبة — ${cat.emoji} ${cat.name}`,
+    color:parseInt((cat.color||'#4a90e2').replace('#',''),16),
+    fields:[
+      {name:'🎖️ الرتبة المعطاة',value:roleName,inline:true},
+      {name:'📁 الكاتيقوري',value:`${cat.emoji} ${cat.name}`,inline:true},
+      {name:'✅ نجح',value:`${given}`,inline:true},
+      {name:'❌ فشل',value:`${failed}`,inline:true},
+      {name:'👤 الأعضاء',value:successNames.join('، ').slice(0,500)||'—',inline:false},
+      {name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}
+    ],
+    footer:{text:'Moreeb RP — نظام الرتب'},
+    timestamp:new Date().toISOString()
+  }]});
+
+  toast(`✅ تم إعطاء ${roleName} لـ ${given} عضو!`,'s');
+}
+
+function hexToRgb(hex){
+  const r = parseInt(hex.slice(1,3),16)||100;
+  const g = parseInt(hex.slice(3,5),16)||100;
+  const b = parseInt(hex.slice(5,7),16)||100;
+  return `${r},${g},${b}`;
+}
+
+function selectPtsRole(id, name){
+  selectedRoleId = id;
+  selectedRoleName = name;
+  document.getElementById('ptsSelectedRole').textContent = name;
+  // اعرض رتبة المكافأة
+  const cat = ROLE_CATS[selectedCatIndex];
+  const rewardRole = cat ? discordRoles.find(r=>r.id===cat.rewardRoleId) : null;
+  const rewardEl = document.getElementById('ptsSelectedRoleReward');
+  if(rewardEl) rewardEl.textContent = rewardRole ? `← تنضاف رتبة: ${rewardRole.name}` : cat?.rewardRoleId ? `← تنضاف رتبة ID: ${cat.rewardRoleId}` : '';
+  document.getElementById('ptsGiveForm').style.display = 'block';
+  // reset attendees
+  attendees = [];
+  renderAttendees();
+  document.querySelectorAll('#ptsCatRoles button').forEach(b=>{
+    b.style.opacity = b.textContent.trim()===name ? '1' : '0.5';
+  });
+}
+
+function addAttendee(){
+  const inp = document.getElementById('attendeeName');
+  const name = inp?.value.trim();
+  if(!name) return;
+  if(attendees.includes(name)){toast('العضو موجود بالفعل','w');return;}
+  attendees.push(name);
+  renderAttendees();
+  inp.value='';inp.focus();
+}
+
+function renderAttendees(){
+  const c = document.getElementById('attendeeList');
+  if(!c) return;
+  if(!attendees.length){c.innerHTML='<span style="color:var(--td);font-size:12px;">لا يوجد حاضرون بعد</span>';return;}
+  c.innerHTML = attendees.map((n,i)=>`
+    <span style="background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:4px 10px;font-size:12px;color:#fff;display:inline-flex;align-items:center;gap:6px;">
+      ${n}
+      <button onclick="removeAttendee(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;padding:0;">✕</button>
+    </span>`).join('');
+}
+
+function removeAttendee(i){attendees.splice(i,1);renderAttendees();}
+function clearAttendees(){attendees=[];renderAttendees();}
+
+async function confirmGivePoints(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const amt = parseInt(document.getElementById('ptsAmt2').value)||0;
+  const reason = document.getElementById('ptsRsn2').value.trim()||'إعطاء نقاط';
+  if(!selectedRoleName){toast('اختر رتبة','e');return;}
+  if(!amt){toast('ادخل عدد النقاط','e');return;}
+  if(!attendees.length){toast('أضف حاضرين أولاً','w');return;}
+
+  const cat = ROLE_CATS[selectedCatIndex];
+  const rewardRoleId = cat?.rewardRoleId;
+  let given=0, failed=0;
+
+  toast(`جاري إعطاء الرتب لـ ${attendees.length} عضو...`,'i');
+
+  for(const name of attendees){
+    // نقاط
+    if(!pointsData[name]) pointsData[name]={points:0,logs:[]};
+    pointsData[name].points += amt;
+    pointsData[name].logs.push({amt,reason,by:CU?.name,time:now()});
+
+    // إعطاء الرتبة في الديسكورد
+    if(rewardRoleId){
+      const dm = discordMembers.find(m=>(m.nick||m.user?.global_name||m.user?.username||'').toLowerCase()===name.toLowerCase());
+      if(dm?.user?.id){
+        try{
+          const res = await fetch(CFG.workerUrl+'/role/give',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({userId:dm.user.id, roleId:rewardRoleId, memberName:name, roleName:cat?.name, by:CU?.name})
+          });
+          const d = await res.json();
+          if(d.ok) given++; else failed++;
+        }catch{failed++;}
+      } else { failed++; }
+    }
+  }
+
+  renderPointsBoard();
+  addPtsLog(`+${amt} نقطة لـ ${attendees.length} عضو من ${selectedRoleName} (${cat?.name})`, reason);
+  saveLS();
+
+  // إشعار الديسكورد
+  await sendHook({embeds:[{
+    title:`⭐ نقاط + رتب — ${cat?.name||selectedRoleName}`,
+    color:parseInt((cat?.color||'#f4a726').replace('#',''),16),
+    fields:[
+      {name:'⭐ النقاط',value:`+${amt} لكل عضو`,inline:true},
+      {name:'🎖️ الرتبة المعطاة',value:selectedRoleName,inline:true},
+      {name:'👥 عدد الحاضرين',value:`${attendees.length}`,inline:true},
+      {name:'✅ نجح',value:`${given}`,inline:true},
+      {name:'❌ فشل',value:`${failed}`,inline:true},
+      {name:'📝 السبب',value:reason,inline:false},
+      {name:'👤 الحاضرون',value:attendees.join('، ').slice(0,500),inline:false},
+      {name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}
+    ],
+    footer:{text:'Moreeb RP — نظام النقاط والحضور'},
+    timestamp:new Date().toISOString()
+  }]});
+
+  document.getElementById('ptsAmt2').value='';
+  document.getElementById('ptsRsn2').value='';
+  attendees=[];renderAttendees();
+  toast(`✅ تم إعطاء الرتبة لـ ${given} عضو${failed?` — فشل ${failed} (ما لقيناهم في الديسكورد)`:''}`,'s');
+}
+
+async function confirmGivePtsMember(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const name = document.getElementById('ptsMbr2').value.trim();
+  const amt = parseInt(document.getElementById('ptsAmt2').value)||0;
+  const reason = document.getElementById('ptsRsn2').value.trim();
+  if(!name||!amt){toast('ادخل الاسم والنقاط','e');return;}
+
+  if(!pointsData[name]) pointsData[name]={points:0,logs:[]};
+  pointsData[name].points += amt;
+  pointsData[name].logs.push({amt,reason,by:CU?.name,time:now()});
+  renderPointsBoard();
+  addPtsLog(`+${amt} نقطة لـ ${name}`, reason);
+  saveLS();
+
+  const ok = await sendHook({embeds:[{
+    title:`⭐ نقاط إدارية — ${name}`,color:0xf4a726,
+    fields:[
+      {name:'⭐ النقاط',value:`+${amt}`,inline:true},
+      {name:'👤 العضو',value:name,inline:true},
+      {name:'📝 السبب',value:reason||'—',inline:false},
+      {name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}
+    ],
+    footer:{text:'Moreeb RP — نظام النقاط'},
+    timestamp:new Date().toISOString()
+  }]});
+
+  document.getElementById('ptsMbr2').value='';
+  toast(ok?`تم إعطاء ${amt} نقطة لـ ${name} ✅`:`تم إعطاء النقاط`,'s');
+}
+
+async function givePointsToRole(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const roleKey = document.getElementById('ptsRole').value;
+  const amt = parseInt(document.getElementById('ptsAmount').value)||0;
+  const reason = document.getElementById('ptsReason').value.trim();
+  if(!amt){toast('ادخل عدد النقاط','e');return;}
+  const r = gR(roleKey);
+  // أعطي نقاط لكل أعضاء هذه الرتبة
+  const targets = members.filter(m=>m.role===roleKey);
+  targets.forEach(m=>{
+    if(!pointsData[m.name]) pointsData[m.name]={points:0,logs:[]};
+    pointsData[m.name].points += amt;
+    pointsData[m.name].logs.push({amt,reason,by:CU?.name,time:now()});
+  });
+  renderPointsBoard();
+  addPtsLog(`تم إعطاء ${amt} نقطة لـ ${targets.length} عضو من رتبة ${r.label}`, reason);
+  const ok = await sendHook({embeds:[{
+    title:`⭐ نقاط إدارية — ${r.emoji} ${r.label}`,color:0xf4a726,
+    fields:[
+      {name:'⭐ النقاط',value:`+${amt}`,inline:true},
+      {name:'👥 الرتبة',value:`${r.emoji} ${r.label}`,inline:true},
+      {name:'📝 السبب',value:reason||'—',inline:false},
+      {name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}
+    ],footer:{text:'Moreeb RP — نظام النقاط'},timestamp:new Date().toISOString()
+  }]});
+  saveLS();
+  toast(ok?`تم إعطاء ${amt} نقطة لرتبة ${r.label} ✅`:`تم إعطاء النقاط`,'s');
+  document.getElementById('ptsAmount').value='';
+  document.getElementById('ptsReason').value='';
+}
+
+async function givePointsToMember(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const name = document.getElementById('ptsMember').value.trim();
+  const amt = parseInt(document.getElementById('ptsAmount').value)||0;
+  const reason = document.getElementById('ptsReason').value.trim();
+  if(!name||!amt){toast('ادخل الاسم والنقاط','e');return;}
+  if(!pointsData[name]) pointsData[name]={points:0,logs:[]};
+  pointsData[name].points += amt;
+  pointsData[name].logs.push({amt,reason,by:CU?.name,time:now()});
+  renderPointsBoard();
+  addPtsLog(`تم إعطاء ${amt} نقطة لـ ${name}`, reason);
+  const ok = await sendHook({embeds:[{
+    title:`⭐ نقاط إدارية — ${name}`,color:0xf4a726,
+    fields:[
+      {name:'⭐ النقاط',value:`+${amt}`,inline:true},
+      {name:'👤 العضو',value:name,inline:true},
+      {name:'📝 السبب',value:reason||'—',inline:false},
+      {name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}
+    ],footer:{text:'Moreeb RP — نظام النقاط'},timestamp:new Date().toISOString()
+  }]});
+  saveLS();
+  toast(ok?`تم إعطاء ${amt} نقطة لـ ${name} ✅`:`تم إعطاء النقاط`,'s');
+  document.getElementById('ptsMember').value='';
+}
+
+async function quickGivePts(){
+  const target = document.getElementById('ptsTarget').value.trim();
+  const amt = parseInt(document.getElementById('ptsAmt').value)||0;
+  const reason = document.getElementById('ptsSbr').value.trim();
+  if(!target||!amt){toast('اكمل البيانات','e');return;}
+  if(!pointsData[target]) pointsData[target]={points:0,logs:[]};
+  pointsData[target].points += amt;
+  pointsData[target].logs.push({amt,reason,by:CU?.name,time:now()});
+  renderPointsBoard();
+  addPtsLog(`تم إعطاء ${amt} نقطة لـ ${target}`, reason);
+  await sendHook({embeds:[{title:`⭐ نقاط — ${target}`,color:0xf4a726,
+    fields:[{name:'⭐',value:`+${amt}`,inline:true},{name:'📝',value:reason||'—',inline:true},{name:'👮',value:CU?.name||'الإدارة',inline:true}],
+    footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
+  saveLS();cM('mAddPts');
+  document.getElementById('ptsTarget').value='';document.getElementById('ptsAmt').value='';document.getElementById('ptsSbr').value='';
+  toast(`تم إعطاء ${amt} نقطة ✅`,'s');
+}
+
+function renderPointsBoard(){
+  const c = document.getElementById('ptsBoard');
+  if(!c) return;
+  const sorted = Object.entries(pointsData).sort((a,b)=>b[1].points-a[1].points);
+  if(!sorted.length){c.innerHTML='<div class="empty">لا يوجد نقاط بعد</div>';return;}
+  c.innerHTML = sorted.map(([name,data],i)=>{
+    const medals = ['🥇','🥈','🥉'];
+    const medal = medals[i]||`${i+1}.`;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--s2);border-radius:10px;border:1px solid var(--br);margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">${medal}</span>
+        <span style="font-size:14px;font-weight:700;color:#fff;">${name}</span>
+      </div>
+      <span style="font-size:18px;font-weight:900;color:var(--gold);">⭐ ${data.points}</span>
+    </div>`;
+  }).join('');
+}
+
+function addPtsLog(msg, reason){
+  const c = document.getElementById('ptsLog');
+  if(!c) return;
+  c.querySelector('.empty')?.remove();
+  const d = document.createElement('div');
+  d.style.cssText='padding:10px 14px;background:var(--s2);border-radius:10px;border:1px solid var(--br);margin-bottom:8px;font-size:13px;';
+  d.innerHTML=`<div style="color:#fff;font-weight:600;">${msg}</div><div style="color:var(--td);font-size:11px;margin-top:3px;">📝 ${reason||'—'} | 🕐 ${now()}</div>`;
+  c.insertBefore(d, c.firstChild);
+}
+
+// ════════════════════════════════════
+// MEETING SYSTEM
+// ════════════════════════════════════
+function populateMtgCat(){
+  const sel = document.getElementById('mtgCat');
+  if(!sel) return;
+  sel.innerHTML = ROLE_CATS.map((c,i)=>`<option value="${i}">${c.emoji} ${c.name}</option>`).join('');
+}
+
+async function runMeeting(){
+  if(!hp('manageRoles')){toast('ما عندك صلاحية','e');return;}
+  const mtgName = document.getElementById('mtgName').value.trim();
+  const catIdx = parseInt(document.getElementById('mtgCat').value);
+  const pts = parseInt(document.getElementById('mtgPts').value)||10;
+  const raw = document.getElementById('mtgAttendees').value.trim();
+  if(!mtgName){toast('ادخل اسم الاجتماع','e');return;}
+  if(!raw){toast('ادخل أسماء الحاضرين','e');return;}
+
+  const names = raw.split('\n').map(n=>n.trim()).filter(n=>n);
+  const cat = ROLE_CATS[catIdx];
+  const rewardRoleId = cat?.rewardRoleId;
+  let given=0, failed=0;
+
+  toast(`جاري تنفيذ الاجتماع لـ ${names.length} عضو...`,'i');
+
+  for(const name of names){
+    if(!pointsData[name]) pointsData[name]={points:0,logs:[]};
+    pointsData[name].points += pts;
+    pointsData[name].logs.push({amt:pts,reason:mtgName,by:CU?.name,time:now()});
+
+    if(rewardRoleId){
+      const dm = discordMembers.find(m=>(m.nick||m.user?.global_name||m.user?.username||'').toLowerCase()===name.toLowerCase());
+      if(dm?.user?.id){
+        try{
+          const res = await fetch(CFG.workerUrl+'/role/give',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({userId:dm.user.id,roleId:rewardRoleId,memberName:name,roleName:cat?.name,by:CU?.name})
+          });
+          const d=await res.json();
+          if(d.ok) given++; else failed++;
+        }catch{failed++;}
+      } else { failed++; }
+    }
+  }
+
+  renderPointsBoard();
+  addPtsLog(`📅 ${mtgName} — ${names.length} عضو — +${pts} نقطة — ${cat?.name}`, '');
+  saveLS();
+
+  await sendHook({embeds:[{
+    title:`📅 اجتماع — ${mtgName}`,
+    color:parseInt((cat?.color||'#3cba6f').replace('#',''),16),
+    fields:[
+      {name:'📁 الكاتيقوري',value:`${cat?.emoji} ${cat?.name}`,inline:true},
+      {name:'⭐ النقاط',value:`+${pts} لكل عضو`,inline:true},
+      {name:'👥 الحاضرون',value:`${names.length} عضو`,inline:true},
+      {name:'✅ نجح إعطاء الرتبة',value:`${given}`,inline:true},
+      {name:'❌ فشل',value:`${failed}`,inline:true},
+      {name:'👤 القائمة',value:names.join('، ').slice(0,500),inline:false},
+      {name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}
+    ],
+    footer:{text:'Moreeb RP — نظام الاجتماعات'},
+    timestamp:new Date().toISOString()
+  }]});
+
+  cM('mNewMeeting');
+  document.getElementById('mtgAttendees').value='';
+  toast(`✅ تم إعطاء الرتبة لـ ${given} عضو${failed?` (فشل ${failed})`:''}`,'s');
+}
+
+// ════════════════════════════════════
+// TICKETS ENHANCED
+// ════════════════════════════════════
+function filterByType(type){
+  ptsTypeFilter = type;
+  // highlight active cat
+  document.querySelectorAll('[id^="cat_"]').forEach(el=>{
+    el.style.borderColor = 'var(--br)';
+    el.style.background = 'var(--s1)';
+  });
+  const active = document.getElementById('cat_'+type);
+  if(active){ active.style.borderColor='rgba(230,57,70,.4)'; active.style.background='rgba(230,57,70,.05)'; }
+  // filter
+  document.getElementById('tkFilter').value='all';
+  renderTicketsByType(type);
+}
+
+function renderTicketsByType(type){
+  const filtered = type==='all' ? tickets : tickets.filter(t=>t.type===type);
+  renderTicketsList(filtered);
+}
+
+function updateCatCounts(){
+  const types = ['all','role','ban','report','support'];
+  types.forEach(t=>{
+    const el = document.getElementById('catc_'+t);
+    if(el) el.textContent = t==='all' ? tickets.length : tickets.filter(tk=>tk.type===t).length;
+  });
+}
+
+// Override renderTickets
+const _origRT = typeof renderTickets === 'function' ? renderTickets : null;
+function renderTickets(){
+  updateCatCounts();
+  const f = document.getElementById('tkFilter').value;
+  const filtered = f==='all' ? tickets : tickets.filter(t=>t.status===f);
+  renderTicketsList(filtered);
+}
+function renderTicketsList(list){
+  const c = document.getElementById('tkCont'); c.innerHTML='';
+  if(!list.length){c.innerHTML='<div class="empty">لا توجد تكتات</div>';return;}
+  const TK_TYPES={role:'🎖️ رتبة',ban:'🚫 باند',report:'📢 بلاغ',support:'💬 دعم',other:'📋 أخرى'};
+  [...list].reverse().forEach(tk=>{
+    const d=document.createElement('div');d.className='tki';d.onclick=()=>openTK(tk.id);
+    const sc={open:'open',closed:'closed',pending:'pending'}[tk.status]||'open';
+    const sl={open:'🟢 مفتوح',closed:'🔒 مغلق',pending:'⏳ انتظار'}[tk.status];
+    d.innerHTML=`<div class="tkh"><span class="tkn">${tk.id} — ${tk.title}</span><span class="tks ${sc}">${sl}</span></div>
+      <div class="tkb">${TK_TYPES[tk.type]||'📋'} | 👤 ${tk.author} | 💬 ${tk.msgs.length} رسائل</div>
+      <div class="tkt">🕐 ${tk.time||new Date(tk.createdAt).toLocaleString('ar-SA')}</div>`;
+    c.appendChild(d);
+  });
+}
+
+// Add member to ticket
+async function addMemberToTicket(){
+  const name = document.getElementById('addTkMember').value.trim();
+  if(!name){toast('ادخل اسم العضو','e');return;}
+  const tk = tickets.find(t=>t.id===tkTarget);
+  if(!tk){toast('التكت غير موجود','e');return;}
+  // أضف في الديسكورد
+  if(tk.channelId){
+    const member = members.find(m=>m.name===name);
+    if(member?.discordId){
+      await fetch(CFG.workerUrl+'/ticket/add-member',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({channelId:tk.channelId,userId:member.discordId,ticketId:tk.id,addedBy:CU?.name})
+      }).catch(()=>{});
+    }
+  }
+  // أضف في السجل
+  tk.msgs.push({from:'النظام',text:`➕ تمت إضافة ${name} للتكت بواسطة ${CU?.name}`,time:now(),isAdmin:true,isSystem:true});
+  await sendHook({embeds:[{title:`➕ إضافة عضو للتكت ${tk.id}`,color:0x4a90e2,
+    fields:[{name:'👤 العضو المضاف',value:name,inline:true},{name:'👮 بواسطة',value:CU?.name||'الإدارة',inline:true}],
+    footer:{text:'Moreeb RP'}}]});
+  saveLS();cM('mAddToTk');openTK(tkTarget);
+  toast(`تمت إضافة ${name} للتكت ✅`,'s');
+}
+
+// تذكير جميع أصحاب التكتات المفتوحة
+async function sendReminderAll(){
+  if(!hp('replyTicket')){toast('ما عندك صلاحية','e');return;}
+  const open = tickets.filter(t=>t.status!=='closed');
+  if(!open.length){toast('لا توجد تكتات مفتوحة','w');return;}
+  for(const tk of open){
+    await sendHook({embeds:[{
+      title:`🔔 تذكير — تكت مفتوح ${tk.id}`,color:0xf4a726,
+      fields:[{name:'📌 الموضوع',value:tk.title,inline:true},{name:'👤 الفاتح',value:tk.author,inline:true},{name:'📊 الحالة',value:tk.status==='open'?'🟢 مفتوح':'⏳ انتظار',inline:true}],
+      footer:{text:'Moreeb RP — تذكير تلقائي'}
+    }]});
+  }
+  toast(`تم إرسال ${open.length} تذكير للديسكورد ✅`,'s');
+}
+
+// تذكير تكت واحد
+async function remindTicket(id){
+  const tk = tickets.find(t=>t.id===id);
+  if(!tk) return;
+  await sendHook({embeds:[{
+    title:`🔔 تذكير — تكتك ${tk.id} لا يزال مفتوحاً`,color:0xf4a726,
+    description:`👤 ${tk.author}، تكتك **${tk.title}** لا يزال قيد المراجعة.
+الإدارة ستردّ قريباً 🎯`,
+    footer:{text:'Moreeb RP'}
+  }]});
+  toast(`تم إرسال تذكير لـ ${tk.author} ✅`,'s');
+}
+
+// ════════════════════════════════════
+// LANDING PAGE
+// ════════════════════════════════════
+function showLoginForm(){
+  // auto-fill if saved
+  loadSavedLogin();
+  oM('mLogin');
+  setTimeout(()=>document.getElementById('lnm')?.focus(),200);
+}
+
+async function loadLandingStats(){
+  // عدد الأعضاء من localStorage المحفوظ
+  try{
+    const saved = localStorage.getItem('moreeb_discord_members');
+    if(saved){
+      const data = JSON.parse(saved);
+      document.getElementById('landMemCount').textContent = data.length.toLocaleString('ar');
+    } else {
+      // جيب من الـ Worker
+      const r = await fetch(CFG.workerUrl+'/members?after=0');
+      const data = await r.json();
+      if(Array.isArray(data)) document.getElementById('landMemCount').textContent = data.length;
+    }
+  }catch(e){}
+
+  // أونلاين — نجيب من Guild Preview
+  try{
+    const r = await fetch(CFG.workerUrl+'/guild-preview');
+    const data = await r.json();
+    if(data.approximate_presence_count){
+      document.getElementById('landOnlineCount').textContent = data.approximate_presence_count.toLocaleString('ar');
+    }
+    if(data.approximate_member_count){
+      document.getElementById('landMemCount').textContent = data.approximate_member_count.toLocaleString('ar');
+    }
+  }catch(e){}
+
+  // التكتات المفتوحة
+  try{
+    const r2 = await fetch(CFG.workerUrl+'/tickets');
+    const tks = await r2.json();
+    if(Array.isArray(tks)){
+      document.getElementById('landTkCount').textContent = tks.filter(t=>t.status!=='closed').length;
+    }
+  }catch(e){}
+}
+
+// ════════════════════════════════════
+// CHAT SYSTEM
+// ════════════════════════════════════
+const CHAT_CHANNEL = '1245871027339137097';
+let CHAT_CHANNEL_ACTIVE = '1245871027339137097';
+let chatMessages = [];
+let chatInterval = null;
+let lastMsgId = null;
+let currentChannelId = CHAT_CHANNEL;
+let discordChannels = [];
+
+async function fetchChannels(){
+  try{
+    const r = await fetch(CFG.workerUrl+'/channels');
+    const data = await r.json();
+    if(!Array.isArray(data)) return;
+    // فلتر النصية فقط وارتبها
+    discordChannels = data
+      .filter(c=>c.type===0||c.type===5||c.type===15)
+      .sort((a,b)=>(a.position||0)-(b.position||0));
+    renderChannelsList();
+  }catch(e){ toast('خطأ في جلب الرومات','e'); }
+}
+
+function renderChannelsList(){
+  const c = document.getElementById('channelsList');
+  if(!c) return;
+  if(!discordChannels.length){c.innerHTML='<div class="empty" style="padding:12px;">لا توجد رومات</div>';return;}
+
+  // جمّع حسب الكاتيقوري
+  const cats = {};
+  discordChannels.forEach(ch=>{
+    const catId = ch.parent_id||'other';
+    if(!cats[catId]) cats[catId]=[];
+    cats[catId].push(ch);
+  });
+
+  c.innerHTML = Object.entries(cats).map(([catId, channels])=>{
+    const catName = discordChannels.find(c=>c.id===catId)?.name||'';
+    return `${catName?`<div style="font-size:10px;color:var(--td);letter-spacing:1px;text-transform:uppercase;padding:8px 8px 4px;margin-top:6px;">${catName}</div>`:''}
+    ${channels.map(ch=>`
+      <div onclick="selectChannel('${ch.id}','${ch.name}')" 
+        id="ch_${ch.id}"
+        style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:${currentChannelId===ch.id?'#fff':'var(--td)'};background:${currentChannelId===ch.id?'rgba(230,57,70,.15)':'transparent'};transition:all .2s;"
+        onmouseover="if('${ch.id}'!==currentChannelId)this.style.background='var(--s2)';this.style.color='#fff';"
+        onmouseout="if('${ch.id}'!==currentChannelId){this.style.background='transparent';this.style.color='var(--td)';}">
+        <span style="font-size:14px;">#</span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${ch.name}</span>
+      </div>`).join('')}`;
+  }).join('');
+}
+
+function selectChannel(id, name){
+  currentChannelId = id;
+  lastMsgId = null;
+  chatMessages = [];
+  document.getElementById('currentChName').innerHTML=`<div class="dot"></div><span>#${name}</span>`;
+  renderChannelsList();
+  loadChat();
+}
+
+async function loadChat(){
+  try{
+    const r = await fetch(CFG.workerUrl+'/chat?limit=50&channel='+(CHAT_CHANNEL_ACTIVE||CHAT_CHANNEL));
+    const msgs = await r.json();
+    if(!Array.isArray(msgs)) return;
+    // رتّب من الأقدم للأحدث
+    chatMessages = [...msgs].reverse();
+    renderChat();
+    if(msgs.length>0) lastMsgId = msgs[0].id;
+  }catch(e){ console.error('chat error',e); }
+}
+
+async function loadNewMsgs(){
+  if(!lastMsgId) return loadChat();
+  try{
+    const r = await fetch(CFG.workerUrl+'/chat?limit=10&channel='+(CHAT_CHANNEL_ACTIVE||CHAT_CHANNEL));
+    const msgs = await r.json();
+    if(!Array.isArray(msgs)||!msgs.length) return;
+    const newMsgs = msgs.filter(m=>BigInt(m.id)>BigInt(lastMsgId));
+    if(!newMsgs.length) return;
+    chatMessages = [...chatMessages, ...[...newMsgs].reverse()];
+    if(chatMessages.length>100) chatMessages=chatMessages.slice(-100);
+    lastMsgId = msgs[0].id;
+    renderChat(true);
+  }catch(e){}
+}
+
+function renderChat(scrollBottom=false){
+  const c = document.getElementById('chatMessages');
+  if(!c) return;
+  if(!chatMessages.length){c.innerHTML='<div class="empty">لا توجد رسائل</div>';return;}
+  c.innerHTML = chatMessages.map(m=>{
+    const author = m.member?.nick || m.author?.global_name || m.author?.username || 'مجهول';
+    const userId = m.author?.id;
+    const avatar = m.author?.avatar
+      ? `https://cdn.discordapp.com/avatars/${userId}/${m.author.avatar}.png?size=40`
+      : null;
+    const time = new Date(m.timestamp).toLocaleString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+    const isMe = CU && author === CU.name;
+    const roleIds = m.member?.roles || [];
+    const topRole = discordRoles.filter(r=>roleIds.includes(r.id)).sort((a,b)=>b.position-a.position)[0];
+    const roleColor = topRole?.color ? '#'+topRole.color.toString(16).padStart(6,'0') : 'var(--td)';
+    const roleName = topRole?.name || '';
+
+    return `<div style="display:flex;gap:10px;align-items:flex-start;${isMe?'flex-direction:row-reverse;':''}" >
+      <!-- Avatar -->
+      <div onclick="showProfile('${userId}')" style="cursor:pointer;flex-shrink:0;">
+        ${avatar
+          ? `<img src="${avatar}" style="width:36px;height:36px;border-radius:50%;border:2px solid ${roleColor};" onerror="this.style.display='none'">`
+          : `<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${roleColor},#111);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;border:2px solid ${roleColor};">${author.charAt(0)}</div>`
+        }
+      </div>
+      <!-- Message -->
+      <div style="max-width:70%;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;${isMe?'flex-direction:row-reverse;':''}">
+          <span onclick="showProfile('${userId}')" style="font-size:13px;font-weight:700;color:#fff;cursor:pointer;" 
+            onmouseover="this.style.color='${roleColor}'" onmouseout="this.style.color='#fff'">${author}</span>
+          ${roleName?`<span style="font-size:10px;padding:1px 7px;border-radius:20px;background:rgba(255,255,255,.08);color:${roleColor};border:1px solid ${roleColor}40;">${roleName}</span>`:''}
+          <span style="font-size:11px;color:var(--td);">${time}</span>
+        </div>
+        <div style="background:${isMe?'rgba(230,57,70,.15)':'var(--s2)'};border:1px solid ${isMe?'rgba(230,57,70,.3)':'var(--br)'};border-radius:${isMe?'14px 4px 14px 14px':'4px 14px 14px 14px'};padding:10px 14px;font-size:13px;color:var(--tx);line-height:1.5;word-break:break-word;">
+          ${m.content||'[رسالة غير نصية]'}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  if(scrollBottom||!chatMessages.length){
+    c.scrollTop = c.scrollHeight;
+  }
+}
+
+async function sendChatMsg(){
+  const inp = document.getElementById('chatInput');
+  const txt = inp?.value.trim();
+  if(!txt) return;
+  inp.value='';
+  const ch = CHAT_CHANNEL_ACTIVE || CHAT_CHANNEL;
+  try{
+    const r = await fetch(CFG.workerUrl+'/chat/send',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({content:txt, channel: ch, username: CU?.name||'مجهول'})
+    });
+    const d = await r.json();
+    if(d.ok) await loadNewMsgs();
+    else toast('فشل الإرسال — تحقق من صلاحيات البوت','e');
+  }catch(e){ toast('خطأ في الإرسال','e'); }
+}
+
+// بروفايل العضو
+function showProfile(userId){
+  if(!userId) return;
+  const dm = discordMembers.find(m=>m.user?.id===userId);
+  if(!dm){toast('ما لقيت بيانات العضو — سوّ مزامنة أولاً','w');return;}
+
+  const name = dm.nick||dm.user?.global_name||dm.user?.username||'مجهول';
+  const username = dm.user?.username||'—';
+  const avatar = dm.user?.avatar
+    ? `https://cdn.discordapp.com/avatars/${userId}/${dm.user.avatar}.png?size=128`
+    : null;
+
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileUsername').textContent = '@'+username;
+  document.getElementById('profileAvatarFallback').textContent = name.charAt(0);
+
+  const avatarEl = document.getElementById('profileAvatar');
+  const fallbackEl = document.getElementById('profileAvatarFallback');
+  if(avatar){
+    avatarEl.src=avatar;avatarEl.style.display='inline-block';
+    fallbackEl.style.display='none';
+  } else {
+    avatarEl.style.display='none';fallbackEl.style.display='inline-flex';
+  }
+
+  // رتبه
+  const roleIds = dm.roles||[];
+  const memberRoles = discordRoles.filter(r=>roleIds.includes(r.id)).sort((a,b)=>b.position-a.position);
+  document.getElementById('profileRoles').innerHTML = memberRoles.slice(0,10).map(r=>{
+    const clr = r.color?'#'+r.color.toString(16).padStart(6,'0'):'var(--td)';
+    return `<span class="rb" style="background:rgba(${hexToRgb(clr)},.15);border:1px solid ${clr}40;color:${clr};">${r.name}</span>`;
+  }).join('');
+
+  // إحصائيات
+  const pts = pointsData[name]?.points||0;
+  const warns = warnings.filter(w=>w.name===name).length;
+  document.getElementById('profileStats').innerHTML=`
+    <div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;border:1px solid var(--br);">
+      <div style="font-size:22px;font-weight:900;color:var(--gold);">⭐ ${pts}</div>
+      <div style="font-size:11px;color:var(--td);margin-top:4px;">النقاط الإدارية</div>
+    </div>
+    <div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;border:1px solid var(--br);">
+      <div style="font-size:22px;font-weight:900;color:${warns>0?'var(--red)':'var(--on)'};">⚠️ ${warns}</div>
+      <div style="font-size:11px;color:var(--td);margin-top:4px;">الإنذارات</div>
+    </div>`;
+
+  oM('mProfile');
+}
+
+// تحديث الشات كل 10 ثواني لما تكون في صفحة الشات
+function startChatInterval(){
+  if(chatInterval) clearInterval(chatInterval);
+  chatInterval = setInterval(loadNewMsgs, 10000);
+  // جلب الرومات إذا ما اتجلبت
+  if(!discordChannels.length) fetchChannels();
+}
+function stopChatInterval(){
+  if(chatInterval){clearInterval(chatInterval);chatInterval=null;}
+}
+
+// ════════════════════════════════════
+// ROOMS SYSTEM
+// ════════════════════════════════════
+let rooms = [
+  { id: '1245871027339137097', name: 'رومات الديسكورد', emoji: '💬' }
+];
+let activeRoomId = null;
+
+function addRoom(){
+  if(!hp('settings')){toast('فقط الأونر يقدر يضيف رومات','e');return;}
+  const name = document.getElementById('newRoomName').value.trim();
+  const id = document.getElementById('newRoomId').value.trim();
+  if(!name||!id){toast('ادخل الاسم والـ ID','e');return;}
+  if(rooms.find(r=>r.id===id)){toast('الروم موجود بالفعل','w');return;}
+  rooms.push({id, name, emoji:'💬'});
+  renderRoomsList();
+  renderChatNav();
+  saveLS();
+  document.getElementById('newRoomName').value='';
+  document.getElementById('newRoomId').value='';
+  toast(`تمت إضافة روم ${name} ✅`,'s');
+}
+
+function removeRoom(id){
+  if(!hp('settings')){toast('فقط الأونر','e');return;}
+  rooms = rooms.filter(r=>r.id!==id);
+  renderRoomsList();
+  renderChatNav();
+  saveLS();
+  toast('تم حذف الروم','w');
+}
+
+function renderRoomsList(){
+  const c = document.getElementById('roomsList');
+  if(!c) return;
+  c.innerHTML = rooms.map(r=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--s2);border-radius:10px;border:1px solid var(--br);margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span>${r.emoji}</span>
+        <span style="font-size:13px;font-weight:700;color:#fff;">${r.name}</span>
+        <span style="font-size:11px;color:var(--td);direction:ltr;">${r.id}</span>
+      </div>
+      ${r.id!=='1245871027339137097'?`<button class="bs bk" onclick="removeRoom('${r.id}')">حذف</button>`:'<span style="font-size:11px;color:var(--td);">افتراضي</span>'}
+    </div>`).join('');
+}
+
+function renderChatNav(){
+  const c = document.getElementById('chatNavItems');
+  if(!c) return;
+  c.innerHTML = rooms.map(r=>`
+    <div class="ni" id="navRoom_${r.id}" onclick="openRoom('${r.id}','${r.name}',this)">
+      <span class="ic">${r.emoji}</span>${r.name}
+    </div>`).join('');
+}
+
+function openRoom(id, name, el){
+  activeRoomId = id;
+  CHAT_CHANNEL_ACTIVE = id;
+  lastMsgId = null;
+  chatMessages = [];
+  // update page title
+  const pt = document.querySelector('#pgChat .pt span');
+  if(pt) pt.textContent = name;
+  const pill = document.querySelector('#pgChat .op span');
+  if(pill) pill.textContent = '#'+name;
+  // Switch page without triggering loadChat from gp
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pgChat').classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  stopChatInterval();
+  // Now load with correct channel
+  loadChat();
+  startChatInterval();
+}
+
+// ════════════════════════════════════
+// ACTION LOG
+// ════════════════════════════════════
+let actionLog = [];
+
+function logAction(type, msg, by){
+  actionLog.unshift({
+    type, msg,
+    by: by||CU?.name||'النظام',
+    time: now(),
+    ts: Date.now()
+  });
+  if(actionLog.length>500) actionLog=actionLog.slice(0,500);
+  saveLS();
+}
+
+function renderActionLog(){
+  const c = document.getElementById('actionLogCont');
+  if(!c) return;
+  const f = document.getElementById('logFilter')?.value||'all';
+  const filtered = f==='all' ? actionLog : actionLog.filter(l=>l.type===f);
+  if(!filtered.length){c.innerHTML='<div class="empty">لا يوجد سجل</div>';return;}
+  const icons = {role:'🎖️',warn:'⚠️',ticket:'🎫',points:'⭐',login:'🔐',chat:'💬'};
+  c.innerHTML = filtered.map(l=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--s2);border-radius:10px;border:1px solid var(--br);margin-bottom:8px;">
+      <span style="font-size:20px;">${icons[l.type]||'📋'}</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;color:#fff;font-weight:600;">${l.msg}</div>
+        <div style="font-size:11px;color:var(--td);margin-top:3px;">👮 ${l.by} | 🕐 ${l.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════
+// STATS
+// ════════════════════════════════════
+function updateStats(){
+  // أرقام سريعة
+  const el = id=>document.getElementById(id);
+  if(el('statTotalMembers')) el('statTotalMembers').textContent = discordMembers.length||members.length;
+  if(el('statOpenTk')) el('statOpenTk').textContent = tickets.filter(t=>t.status!=='closed').length;
+  const totalPts = Object.values(pointsData).reduce((s,v)=>s+(v.points||0),0);
+  if(el('statTotalPts')) el('statTotalPts').textContent = totalPts;
+  if(el('statTotalWarns')) el('statTotalWarns').textContent = warnings.length;
+
+  // التكتات حسب النوع
+  const tkTypes = {role:'🎖️ رتبة',ban:'🚫 باند',report:'📢 بلاغ',support:'💬 دعم',other:'📋 أخرى'};
+  const tkByCat = {};
+  tickets.forEach(t=>{ tkByCat[t.type]=(tkByCat[t.type]||0)+1; });
+  const tkEl = el('statTkTypes');
+  if(tkEl) tkEl.innerHTML = Object.entries(tkByCat).map(([k,v])=>`
+    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--s2);border-radius:8px;margin-bottom:6px;font-size:13px;">
+      <span>${tkTypes[k]||k}</span><span style="font-weight:700;color:var(--gold);">${v}</span>
+    </div>`).join('')||'<div class="empty">لا توجد تكتات</div>';
+
+  // أعلى 10 نقاط
+  const topPts = Object.entries(pointsData).sort((a,b)=>b[1].points-a[1].points).slice(0,10);
+  const ptsEl = el('statTopPts');
+  if(ptsEl) ptsEl.innerHTML = topPts.map(([name,data],i)=>`
+    <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--s2);border-radius:8px;margin-bottom:6px;font-size:13px;">
+      <span>${['🥇','🥈','🥉'][i]||`${i+1}.`} ${name}</span>
+      <span style="font-weight:700;color:var(--gold);">⭐ ${data.points}</span>
+    </div>`).join('')||'<div class="empty">لا يوجد نقاط</div>';
+}
+
+// بحث الأعضاء
+function searchMember(){
+  const q = document.getElementById('memberSearch')?.value.trim().toLowerCase();
+  const c = document.getElementById('memberSearchResults');
+  if(!c) return;
+  if(!q){c.innerHTML='';return;}
+  const res = discordMembers.filter(m=>{
+    const name = (m.nick||m.user?.global_name||m.user?.username||'').toLowerCase();
+    return name.includes(q);
+  }).slice(0,20);
+  if(!res.length){c.innerHTML='<div class="empty">لا توجد نتائج</div>';return;}
+  c.innerHTML = res.map(m=>{
+    const name = m.nick||m.user?.global_name||m.user?.username||'مجهول';
+    const topRole = discordRoles.filter(r=>m.roles?.includes(r.id)).sort((a,b)=>b.position-a.position)[0];
+    const clr = topRole?.color?'#'+topRole.color.toString(16).padStart(6,'0'):'var(--td)';
+    const pts = pointsData[name]?.points||0;
+    const warns = warnings.filter(w=>w.name===name).length;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--s2);border-radius:10px;border:1px solid var(--br);margin-bottom:8px;cursor:pointer;" onclick="showProfile('${m.user?.id}')">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">${name}</div>
+        <div style="font-size:11px;color:${clr};margin-top:2px;">${topRole?.name||'—'}</div>
+      </div>
+      <div style="display:flex;gap:14px;font-size:12px;">
+        <span style="color:var(--gold);">⭐ ${pts}</span>
+        <span style="color:${warns>0?'var(--red)':'var(--td)'};">⚠️ ${warns}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// تقرير أسبوعي
+async function genWeeklyReport(){
+  const totalPts = Object.values(pointsData).reduce((s,v)=>s+(v.points||0),0);
+  const openTk = tickets.filter(t=>t.status!=='closed').length;
+  const closedTk = tickets.filter(t=>t.status==='closed').length;
+  const topMember = Object.entries(pointsData).sort((a,b)=>b[1].points-a[1].points)[0];
+
+  await sendHook({embeds:[{
+    title:'📊 التقرير الأسبوعي — Moreeb RP',
+    color:0x4a90e2,
+    fields:[
+      {name:'👥 الأعضاء',value:`${(discordMembers.length||members.length).toLocaleString('ar')}`,inline:true},
+      {name:'🎫 تكتات مفتوحة',value:`${openTk}`,inline:true},
+      {name:'✅ تكتات مغلقة',value:`${closedTk}`,inline:true},
+      {name:'⭐ إجمالي النقاط',value:`${totalPts}`,inline:true},
+      {name:'⚠️ الإنذارات',value:`${warnings.length}`,inline:true},
+      {name:'🏆 الأعلى نقاطاً',value:topMember?`${topMember[0]} (${topMember[1].points} نقطة)`:'—',inline:true},
+    ],
+    footer:{text:'Moreeb RP — تقرير أسبوعي'},
+    timestamp:new Date().toISOString()
+  }]});
+  toast('تم إرسال التقرير للديسكورد ✅','s');
+}
+
+// ════════════════════════════════════
+// AUTO PROMOTION SYSTEM
+// ════════════════════════════════════
+const PROMOTION_RULES = [
+  { points: 10, roleId: '1426833412647424073', name: 'نقطة أولى إدارية' },
+  { points: 20, roleId: '1426833416870953001', name: 'نقطة ثانية إدارية' },
+  { points: 30, roleId: '1426833424357920789', name: 'نقطة ثالثة إدارية' },
+];
+
+async function checkAutoPromotion(memberName){
+  const pts = pointsData[memberName]?.points || 0;
+  const dm = discordMembers.find(m=>(m.nick||m.user?.global_name||m.user?.username||'')===memberName);
+  if(!dm?.user?.id) return;
+
+  for(const rule of PROMOTION_RULES){
+    if(pts >= rule.points){
+      // تحقق إذا عنده الرتبة بالفعل
+      const hasRole = dm.roles?.includes(rule.roleId);
+      if(!hasRole){
+        try{
+          const res = await fetch(CFG.workerUrl+'/role/give',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({userId:dm.user.id, roleId:rule.roleId, memberName, roleName:rule.name, by:'النظام التلقائي'})
+          });
+          const d = await res.json();
+          if(d.ok){
+            // حدّث الرتب في discordMembers
+            if(!dm.roles) dm.roles = [];
+            dm.roles.push(rule.roleId);
+            logAction('role',`ترقية تلقائية: ${memberName} حصل على ${rule.name} (${pts} نقطة)`,'النظام');
+            await sendHook({embeds:[{
+              title:`🎖️ ترقية تلقائية — ${memberName}`,
+              color:0xf4a726,
+              fields:[
+                {name:'👤 العضو',value:memberName,inline:true},
+                {name:'🎖️ الرتبة',value:rule.name,inline:true},
+                {name:'⭐ النقاط',value:`${pts}`,inline:true},
+              ],
+              footer:{text:'Moreeb RP — نظام الترقية التلقائية'},
+              timestamp:new Date().toISOString()
+            }]});
+            toast(`🎖️ ترقية تلقائية: ${memberName} ← ${rule.name}`,'s');
+          }
+        }catch(e){console.error('auto promotion error',e);}
+      }
+    }
+  }
+}
+
+// ════════════════════════════════════
+// INIT
+// ════════════════════════════════════
+loadLS();
+renderRules();
+renderChatNav();
+renderRoomsList();
+// تحميل الأعضاء المحفوظين من localStorage
+try{
+  const saved = localStorage.getItem('moreeb_discord_members');
+  if(saved){ discordMembers = JSON.parse(saved); console.log('loaded',discordMembers.length,'members from cache'); }
+}catch(e){}
+// جلب احصائيات الصفحة الرئيسية
+loadLandingStats();
+buildPGrid('nrPg');
+// Manage codes button wiring
+document.querySelector('button[onclick="oM(\'mMC\')"]')?.addEventListener('click',openMC);
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+['lcd','lnm'].forEach(id=>document.getElementById(id)?.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();}));
+</script>
+</body>
+</html>
