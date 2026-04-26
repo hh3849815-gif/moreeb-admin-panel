@@ -1818,11 +1818,41 @@ function saveSettings(){
 // ════════════════════════════════════
 // MEMBER STATE HELPERS
 // ════════════════════════════════════
+function renderMembers(){
+  const c = document.getElementById('mCont');
+  if(!c) return;
+  const q = document.getElementById('mSrch')?.value?.toLowerCase()||'';
+  const filtered = members.filter(m=>!q||m.name.toLowerCase().includes(q));
+  if(!filtered.length){c.innerHTML='<div class="empty">لا يوجد أعضاء</div>';return;}
+  c.innerHTML = filtered.map(m=>{
+    const r=gR(m.role);
+    return `<div class="mi" onclick="openMember('${m.name}')">
+      <div class="mav" style="background:linear-gradient(135deg,${m.color||r?.color||'#7a7a9a'},#111);">${m.name.charAt(0)}</div>
+      <div class="min">
+        <div class="mnm">${m.name}</div>
+        <div class="mrl" style="color:${r?.color||'var(--td)'};">${r?.emoji||''} ${r?.label||'—'}</div>
+      </div>
+      ${m.warns>0?`<span class="wb">⚠️ ${m.warns}</span>`:''}
+    </div>`;
+  }).join('');
+}
+
+function renderStats(){
+  const el = id => document.getElementById(id);
+  if(el('sCnt')) el('sCnt').textContent = members.length;
+  if(el('sLog')) el('sLog').textContent = loginLogs.length;
+  const warns = warnings?.length||0;
+  if(el('sWrn')) el('sWrn').textContent = warns;
+  const openTk = tickets.filter(t=>t.status!=='closed').length;
+  if(el('nbT')) el('nbT').textContent = openTk||'';
+  if(el('landMemCount') && discordMembers.length) el('landMemCount').textContent = discordMembers.length.toLocaleString('ar');
+}
+
 function addMemberState(nm, rk, color){
   const r = gR(rk);
   members.push({name:nm, role:rk, color:color||r?.color||'#7a7a9a', warns:0});
-  renderMembers&&renderMembers();
-  renderStats&&renderStats();
+  renderMembers();
+  renderStats();
   saveLS();
 }
 
