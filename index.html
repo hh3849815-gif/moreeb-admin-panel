@@ -1351,13 +1351,23 @@ async function doLogin(){
   if(detectedDiscordRole?.dm){
     const dm = detectedDiscordRole.dm;
     const memberRoles = detectedDiscordRole.memberRoles;
-    // ابحث عن أعلى رتبة عنده في ROLES
+    // ابحث عن أعلى رتبة عنده في ROLES بالـ ID أو الاسم
     for(const dr of memberRoles){
-      const found = ROLES.find(r=>r.discordId===dr.id || r.label===dr.name);
-      if(found){ rk=found.key; break; }
+      let found = ROLES.find(r=>r.discordId===dr.id);
+      if(!found) found = ROLES.find(r=>r.label===dr.name);
+      if(!found) found = ROLES.find(r=>
+        dr.name.toLowerCase().includes(r.label.toLowerCase()) ||
+        r.label.toLowerCase().includes(dr.name.toLowerCase())
+      );
+      if(found && found.key !== 'member'){ rk=found.key; break; }
     }
-    // لو ما لقينا رتبة مطابقة — خليه عضو عادي
-    if(!rk) rk='member';
+    // لو ما لقينا رتبة مطابقة — استخدم position
+    if(!rk){
+      const topRole = memberRoles[0];
+      if(topRole && topRole.position > 50) rk='admin';
+      else if(topRole && topRole.position > 20) rk='mod';
+      else rk='member';
+    }
   } else {
     // استخدم الكود اليدوي
     if(!cd){toast('ادخل كود الدخول','e');return;}
