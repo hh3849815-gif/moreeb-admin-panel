@@ -3350,20 +3350,24 @@ async function checkAutoPromotion(memberName){
 // DISCORD OAUTH2
 // ════════════════════════════════════
 const DISCORD_CLIENT_ID = '1497320882643927191';
-const REDIRECT_URI = 'https://moreeb-admin-panel-7vxx.vercel.app/';
+const REDIRECT_URI = 'https://moreeb-admin-panel-7vxx.vercel.app';
 
 function loginWithDiscord(){
-  const scope = 'identify guilds.members.read';
-  const url = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(scope)}`;
+  const scope = 'identify';
+  const url = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(scope)}`;
   window.location.href = url;
 }
 
 async function handleOAuthCallback(){
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('code');
-  if(!code) return;
+  // Implicit flow - token في الـ hash
+  const hash = window.location.hash;
+  if(!hash || !hash.includes('access_token')) return;
 
-  // امسح الكود من الـ URL
+  const params = new URLSearchParams(hash.slice(1));
+  const accessToken = params.get('access_token');
+  if(!accessToken) return;
+
+  // امسح الـ hash من الـ URL
   window.history.replaceState({}, '', '/');
 
   // إظهار شاشة تحميل
@@ -3373,12 +3377,28 @@ async function handleOAuthCallback(){
 
   try{
     const workerEndpoint = CFG.workerUrl || 'https://moreeb-bot.hh3849815.workers.dev';
-    const r = await fetch(workerEndpoint + '/auth/callback', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ code, redirect_uri: REDIRECT_URI })
+
+    // جيب معلومات العضو مباشرة
+    const userRes = await fetch('https://discord.com/api/users/@me', {
+      headers: { Authorization: `Bearer ${accessToken}` }
     });
-    const data = await r.json();
+    const userData = await userRes.json();
+
+    // جيب رتبه في السيرفر من الـ Worker
+    const memberRes = await fetch(workerEndpoint + '/member-by-id?id=' + userData.id);
+    const memberData = await memberRes.json();
+
+    const data = {
+      ok: true,
+      user: {
+        id: userData.id,
+        username: userData.username,
+        global_name: userData.global_name,
+        avatar: userData.avatar,
+        nick: memberData.nick,
+        roles: memberData.roles || []
+      }
+    };
 
     if(!data.ok || !data.user){
       toast('فشل التحقق من الديسكورد ❌','e');
@@ -3466,7 +3486,7 @@ renderRules();
 renderChatNav();
 renderRoomsList();
 // تحقق من OAuth callback بعد تحميل الإعدادات
-if(window.location.search.includes('code=')) handleOAuthCallback();
+if(window.location.hash.includes('access_token')) handleOAuthCallback();
 // تحميل الأعضاء المحفوظين من localStorage
 try{
   const saved = localStorage.getItem('moreeb_discord_members');
