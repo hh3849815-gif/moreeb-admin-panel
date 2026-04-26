@@ -289,20 +289,7 @@ nav{padding:12px 10px;flex:1;overflow-y:auto;}
 <div class="mo" id="mLogin">
   <div class="md" style="width:400px;">
     <div class="mdt">🔐 تسجيل دخول بالإدارة</div>
-    
-    <!-- زر Discord OAuth -->
-    <button onclick="loginWithDiscord()" style="width:100%;padding:14px;background:#5865F2;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-      تسجيل الدخول بالديسكورد
-    </button>
-
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <div style="flex:1;height:1px;background:var(--br);"></div>
-      <span style="font-size:12px;color:var(--td);">أو بالكود اليدوي</span>
-      <div style="flex:1;height:1px;background:var(--br);"></div>
-    </div>
-
-    <div class="fg"><label class="fl">الاسم</label><input class="fi" id="lnm" placeholder="اسمك"></div>
+    <div class="fg"><label class="fl">اسمك في الديسكورد</label><input class="fi" id="lnm" placeholder="مثال: خالد"></div>
     <div class="fg"><label class="fl">كود الدخول</label>
       <div class="pinput"><input class="fi" type="password" id="lcd" placeholder="ادخل كودك الخاص" style="padding-left:38px;"><button class="peye" onclick="togglePw('lcd',this)">👁</button></div>
     </div>
@@ -313,7 +300,7 @@ nav{padding:12px 10px;flex:1;overflow-y:auto;}
     <div id="rdEl" style="margin-top:10px;display:none;border-radius:10px;padding:10px 14px;text-align:center;font-size:13px;font-weight:700;"></div>
     <div class="mdf">
       <button class="btn bg2" onclick="cM('mLogin')">إلغاء</button>
-      <button class="btn bp" id="lbtn" onclick="doLogin()" style="flex:1;">دخول بالكود ←</button>
+      <button class="btn bp" id="lbtn" onclick="doLogin()" style="flex:1;">تسجيل الدخول ←</button>
     </div>
   </div>
 </div>
@@ -931,6 +918,9 @@ nav{padding:12px 10px;flex:1;overflow-y:auto;}
 <div class="tc" id="TC"></div>
 
 <script>
+// ═══ OAuth Detection ═══
+</script>
+<script>
 // ════════════════════════════════════
 // CONFIG — يتغيّر من الإعدادات
 // ════════════════════════════════════
@@ -1350,181 +1340,51 @@ async function onUsernameInput(){
 async function doLogin(){
   const nm=document.getElementById('lnm').value.trim();
   const cd=document.getElementById('lcd').value.trim();
-  if(!nm){toast('ادخل يوزرك في الديسكورد','e');return;}
-
-  let rk = null;
-
-  // لو لقيناه في الديسكورد — حدد رتبته تلقائياً
-  if(detectedDiscordRole?.dm){
-    const dm = detectedDiscordRole.dm;
-    const memberRoles = detectedDiscordRole.memberRoles;
-    // ابحث عن أعلى رتبة عنده في ROLES بالـ ID أو الاسم
-    for(const dr of memberRoles){
-      let found = ROLES.find(r=>r.discordId===dr.id);
-      if(!found) found = ROLES.find(r=>r.label===dr.name);
-      if(!found) found = ROLES.find(r=>
-        dr.name.toLowerCase().includes(r.label.toLowerCase()) ||
-        r.label.toLowerCase().includes(dr.name.toLowerCase())
-      );
-      if(found && found.key !== 'member'){ rk=found.key; break; }
-    }
-    // لو ما لقينا رتبة مطابقة — استخدم position
-    if(!rk){
-      const topRole = memberRoles[0];
-      if(topRole && topRole.position > 50) rk='admin';
-      else if(topRole && topRole.position > 20) rk='mod';
-      else rk='member';
-    }
-  } else {
-    // استخدم الكود اليدوي
-    if(!cd){toast('ادخل كود الدخول','e');return;}
-    rk=detectRole(nm,cd);
-    if(!rk){toast('الكود غير صحيح ❌','e');return;}
-  }
+  if(!nm){toast('ادخل اسمك','e');return;}
+  if(!cd){toast('ادخل كود الدخول','e');return;}
+  const rk=detectRole(nm,cd);
+  if(!rk){toast('الكود غير صحيح ❌','e');return;}
   const r=gR(rk);
-  if(!r.perms.viewDash&&!CFG.allowMembers){toast('تسجيل دخول الأعضاء موقوف','e');return;}
-
   const btn=document.getElementById('lbtn');
-  btn.textContent='⏳ جاري الإرسال...';btn.classList.add('loading');
-  // استخدم الـ nick من الديسكورد لو متاح
-  const displayName = detectedDiscordRole?.dm?.nick || detectedDiscordRole?.dm?.user?.global_name || nm;
-  CU={name:displayName,role:rk,color:rnd(),discordId:detectedDiscordRole?.dm?.user?.id};
-
-  // Save login if toggle on
+  btn.textContent='⏳';btn.disabled=true;
+  CU={name:nm,role:rk,color:r.color};
   if(document.getElementById('tgSave').classList.contains('on')){
     localStorage.setItem('moreeb_saved_user',JSON.stringify({name:nm,code:cd}));
   }else{
     localStorage.removeItem('moreeb_saved_user');
   }
-
   if(CFG.notifyLogin){
-    await sendHook({embeds:[{title:`${r.emoji} تسجيل دخول — Moreeb RP`,
+    sendHook({embeds:[{title:`${r.emoji} تسجيل دخول — Moreeb RP`,
       color:parseInt(r.color.replace('#',''),16),
       fields:[{name:'👤 الاسم',value:nm,inline:true},{name:'🎖️ الرتبة',value:`${r.emoji} ${r.label}`,inline:true},{name:'🕐 الوقت',value:now(),inline:true}],
-      footer:{text:'Moreeb RP — نظام تسجيل الدخول'},timestamp:new Date().toISOString()}]});
+      footer:{text:'Moreeb RP'},timestamp:new Date().toISOString()}]});
   }
-
-  // Count login
   loginLogs.unshift({name:nm,role:rk,color:CU.color,type:'login',time:now()});
-  document.getElementById('sLog').textContent=loginLogs.length;
-  addLogEl(nm,rk,CU.color,'login');
-  if(!members.find(m=>m.name===CU.name))addMemberState(CU.name,rk,CU.color);
-
-  btn.textContent='تسجيل الدخول';btn.classList.remove('loading');
-  // إظهار الرتبة المكتشفة لثانية ثم الدخول
+  if(!members.find(m=>m.name===nm))addMemberState(nm,rk,CU.color);
+  logAction('login',`دخل ${nm} بصلاحية ${r.label}`,nm);
+  btn.textContent='تسجيل الدخول';btn.disabled=false;
   showRD(rk);
   await new Promise(r=>setTimeout(r,900));
   cM('mLogin');
   document.getElementById('LS').style.display='none';
   document.getElementById('SB').style.display='flex';
   document.getElementById('MA').style.display='block';
-  document.getElementById('sbAv').textContent=CU.name.charAt(0);
+  document.getElementById('sbAv').textContent=nm.charAt(0);
   document.getElementById('sbAv').style.background=`linear-gradient(135deg,${r.color},#111)`;
-  document.getElementById('sbNm').textContent=CU.name;
+  document.getElementById('sbNm').textContent=nm;
   document.getElementById('sbRl').textContent=`${r.emoji} ${r.label}`;
   document.getElementById('sbRl').style.color=r.color;
   applyPerms(rk);
   renderStats();
   saveLS();
-  // جلب الرتب من الديسكورد فوراً بعد الدخول
-  toast(`أهلاً ${nm}! ${r.emoji} ${r.label} — جاري جلب الرتب...`,'s');
-  fetchDiscordRoles().then(ok=>{
-    if(ok){ fetchDiscordMembers(); toast('تم جلب رتب الديسكورد ✅','s'); }
-  });
-  // جلب التكتات
+  toast(`أهلاً ${nm}! ${r.emoji} ${r.label}`,'s');
+  fetchDiscordRoles().then(ok=>{ if(ok) fetchDiscordMembers(); });
   loadTicketsFromWorker();
-  setInterval(loadTicketsFromWorker, 30000);
-  // تحديث الأعضاء كل 5 دقائق تلقائياً
-  setInterval(()=>{ if(discordRoles.length) fetchDiscordMembers(); }, 300000);
+  setInterval(loadTicketsFromWorker,30000);
+  setInterval(()=>{ if(discordRoles.length) fetchDiscordMembers(); },300000);
 }
 
-// ════════════════════════════════════
-// PERMISSIONS
-// ════════════════════════════════════
-function applyPerms(rk){
-  const own=rk==='owner',adm=['owner','admin','mod'].includes(rk);
-  document.getElementById('pnR').classList.toggle('show',!own);
-  document.getElementById('pnS').classList.toggle('show',!own);
-  document.querySelectorAll('#sGrid input,#sGrid select,#sGrid .tg,#sGrid button').forEach(el=>{el.disabled=!own;el.style.opacity=own?'1':'.35';});
-  ['btnAR','btnAsn','btnRm','asnNm','asnRl','rmNm'].forEach(id=>{
-    const el=document.getElementById(id);if(el){el.disabled=!own;el.style.opacity=own?'1':'.4';}
-  });
-  if(!adm){document.getElementById('niSet').style.display='none';document.getElementById('niRoles').style.display='none';}
-  buildSelects();renderRoles();renderPM();
-}
 
-// ════════════════════════════════════
-// STATS
-// ════════════════════════════════════
-function renderStats(){
-  document.getElementById('sMem').textContent=members.length;
-  document.getElementById('sLog').textContent=loginLogs.length;
-  document.getElementById('sWrn').textContent=warnings.length;
-  document.getElementById('sTkt').textContent=tickets.filter(t=>t.status==='open').length;
-  document.getElementById('nbM').textContent=members.length;
-  document.getElementById('nbW').textContent=warnings.length;
-  document.getElementById('nbT').textContent=tickets.filter(t=>t.status!=='closed').length;
-}
-
-// ════════════════════════════════════
-// LOG
-// ════════════════════════════════════
-function addLogEl(nm,rk,color,type){
-  const r=gR(rk);
-  const mk=()=>{
-    const d=document.createElement('div');
-    d.className='li3'+(type==='warn'?' wl':type==='kick'?' rl':'');
-    const ic=type==='warn'?'⚠️':type==='kick'?'🚫':'🟢';
-    const msg=type==='warn'?`${nm} تلقّى إنذاراً`:type==='kick'?`${nm} تم طرده`:`${nm} سجّل دخوله`;
-    d.innerHTML=`<div class="lav" style="background:linear-gradient(135deg,${color},#111)">${nm.charAt(0)}</div>
-      <div><div class="lm">${ic} ${msg}</div>
-      <div style="margin-top:3px;"><span class="rb rb-${rk}" style="font-size:10px;">${r.emoji} ${r.label}</span></div>
-      <div class="lmt">🕐 ${now()} <span class="ct">#سجل-الدخول</span></div></div>`;
-    return d;
-  };
-  ['dLog','lAll'].forEach(id=>{
-    const c=document.getElementById(id);
-    c.querySelector('.empty')?.remove();
-    c.insertBefore(mk(),c.firstChild);
-    while(c.children.length>12)c.removeChild(c.lastChild);
-  });
-}
-
-// ════════════════════════════════════
-// MEMBERS
-// ════════════════════════════════════
-function addMemberState(nm,rk,color){
-  if(members.find(m=>m.name===nm))return;
-  members.push({name:nm,role:rk,color,warns:0});
-  renderMembers();renderStats();saveLS();
-}
-function renderMembers(){
-  const mk=(m,full)=>{
-    const r=gR(m.role);
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td><div class="mi"><div class="ma" style="background:linear-gradient(135deg,${m.color},#111)">${m.name.charAt(0)}</div>
-        <div><div class="mn">${m.name}</div></div></div></td>
-      <td><span class="rb rb-${m.role}">${r.emoji} ${r.label}</span></td>
-      <td><span style="color:var(--on);font-size:12px;">● أونلاين</span></td>
-      ${full?`<td><span style="font-size:13px;color:${m.warns>=3?'var(--red)':'var(--td)'}">${m.warns}/3 ${m.warns>=3?'🚫':''}</span></td>`:''}
-      <td><div class="ab">
-        ${hp('giveWarn')?`<button class="bs bw" onclick="pfWarn('${m.name}')">⚠️</button>`:''}
-        ${hp('manageRoles')?`<button class="bs br2" onclick="oCR('${m.name}','${m.role}')">🎖️</button>`:''}
-        ${hp('kick')?`<button class="bs bk" onclick="oKick('${m.name}')">🚫</button>`:''}
-      </div></td>`;
-    return tr;
-  };
-  const dt=document.getElementById('dTb');dt.innerHTML='';
-  const mt=document.getElementById('mTb');mt.innerHTML='';
-  if(!members.length){
-    dt.innerHTML='<tr><td colspan="4"><div class="empty">لا يوجد أعضاء</div></td></tr>';
-    mt.innerHTML='<tr><td colspan="5"><div class="empty">لا يوجد أعضاء</div></td></tr>';
-    return;
-  }
-  members.slice(0,5).forEach(m=>dt.appendChild(mk(m,false)));
-  members.forEach(m=>mt.appendChild(mk(m,true)));
-}
 async function addMember(){
   if(!hp('addMember')){toast('ما عندك صلاحية','e');return;}
   const nm=document.getElementById('inNm').value.trim();
@@ -1953,6 +1813,54 @@ function saveSettings(){
   CFG.allowMembers=document.getElementById('tgMem').classList.contains('on');
   updateSrvName();updateSrvLogo();updateSrvDesc();
   saveLS();toast('تم حفظ الإعدادات ✅','s');
+}
+
+// ════════════════════════════════════
+// MEMBER STATE HELPERS
+// ════════════════════════════════════
+function addMemberState(nm, rk, color){
+  const r = gR(rk);
+  members.push({name:nm, role:rk, color:color||r?.color||'#7a7a9a', warns:0});
+  renderMembers&&renderMembers();
+  renderStats&&renderStats();
+  saveLS();
+}
+
+function addLogEl(nm, rk, color, type){
+  loginLogs.unshift({name:nm, role:rk, color, type, time:now()});
+  const el = document.getElementById('sLog');
+  if(el) el.textContent = loginLogs.length;
+}
+
+// ════════════════════════════════════
+// APPLY PERMISSIONS
+// ════════════════════════════════════
+function applyPerms(rk){
+  const r = gR(rk);
+  if(!r) return;
+  // إظهار/إخفاء العناصر حسب الصلاحيات
+  const isOwner = rk==='owner';
+  const canSettings = r.perms.settings||isOwner;
+  const canRoles = r.perms.manageRoles||isOwner;
+  const canMembers = r.perms.addMember||isOwner;
+  const canWarn = r.perms.giveWarn||isOwner;
+
+  // إعدادات
+  const niSet = document.getElementById('niSet');
+  if(niSet) niSet.style.display = canSettings?'':'none';
+  // نقاط
+  const niPts = document.getElementById('niPts');
+  if(niPts) niPts.style.display = canRoles?'':'none';
+
+  // بناء الرتب والقوائم
+  buildSelects&&buildSelects();
+  renderRoles&&renderRoles();
+  renderPM&&renderPM();
+  updatePtsRoleSelect&&updatePtsRoleSelect();
+  renderPtsCats&&renderPtsCats();
+  populateMtgCat&&populateMtgCat();
+  renderChatNav&&renderChatNav();
+  renderRoomsList&&renderRoomsList();
 }
 
 // ════════════════════════════════════
@@ -3350,22 +3258,27 @@ async function checkAutoPromotion(memberName){
 // DISCORD OAUTH2
 // ════════════════════════════════════
 const DISCORD_CLIENT_ID = '1497320882643927191';
-const REDIRECT_URI = 'https://moreeb-admin-panel-7vxx.vercel.app';
+const REDIRECT_URI = 'https://moreeb-rp.pages.dev';
 
 function loginWithDiscord(){
   const scope = 'identify';
-  const url = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(scope)}`;
+  const redirectUri = 'https://moreeb-bot.hh3849815.workers.dev/oauth/callback';
+  const url = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}`;
   window.location.href = url;
 }
 
 async function handleOAuthCallback(){
-  // Implicit flow - token في الـ hash
-  const hash = window.location.hash;
-  if(!hash || !hash.includes('access_token')) return;
+  // اقرأ الـ token من localStorage
+  const oauthToken = localStorage.getItem('moreeb_oauth_token');
+  if(!oauthToken) return;
+  localStorage.removeItem('moreeb_oauth_token');
 
-  const params = new URLSearchParams(hash.slice(1));
-  const accessToken = params.get('access_token');
-  if(!accessToken) return;
+  // جيب بيانات العضو من الـ Worker
+  const workerEndpoint2 = CFG.workerUrl || 'https://moreeb-bot.hh3849815.workers.dev';
+  const oauthRes = await fetch(workerEndpoint2 + '/oauth/user?token=' + oauthToken);
+  const oauthData = await oauthRes.json();
+  if(!oauthData.ok) { toast('انتهت صلاحية الجلسة — حاول مجدداً', 'e'); return; }
+  const user = oauthData.user;
 
   // امسح الـ hash من الـ URL
   window.history.replaceState({}, '', '/');
@@ -3378,27 +3291,7 @@ async function handleOAuthCallback(){
   try{
     const workerEndpoint = CFG.workerUrl || 'https://moreeb-bot.hh3849815.workers.dev';
 
-    // جيب معلومات العضو مباشرة
-    const userRes = await fetch('https://discord.com/api/users/@me', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    const userData = await userRes.json();
-
-    // جيب رتبه في السيرفر من الـ Worker
-    const memberRes = await fetch(workerEndpoint + '/member-by-id?id=' + userData.id);
-    const memberData = await memberRes.json();
-
-    const data = {
-      ok: true,
-      user: {
-        id: userData.id,
-        username: userData.username,
-        global_name: userData.global_name,
-        avatar: userData.avatar,
-        nick: memberData.nick,
-        roles: memberData.roles || []
-      }
-    };
+    const data = { ok: true, user };
 
     if(!data.ok || !data.user){
       toast('فشل التحقق من الديسكورد ❌','e');
@@ -3486,7 +3379,7 @@ renderRules();
 renderChatNav();
 renderRoomsList();
 // تحقق من OAuth callback بعد تحميل الإعدادات
-if(window.location.hash.includes('access_token')) handleOAuthCallback();
+if(localStorage.getItem('moreeb_oauth_token')) handleOAuthCallback();
 // تحميل الأعضاء المحفوظين من localStorage
 try{
   const saved = localStorage.getItem('moreeb_discord_members');
