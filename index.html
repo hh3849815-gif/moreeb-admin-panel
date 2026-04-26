@@ -938,7 +938,7 @@ const CFG = {
   webhook: 'https://discord.com/api/webhooks/1496858144918212810/TvyRC4tB0F398urfmA2__cy2Fu1cDKZ8iyWEQxdTsBLCt3mnfwczMDG9Qf1rdYrG9thN',
   botToken: '',
   workerUrl: 'https://moreeb-bot.hh3849815.workers.dev',
-  guildId: '1481533244049461415',
+  guildId: '589857259362713654',
   ownerName: 'moreeb',
   ownerCode: 'OWNER#2024',
   notifyLogin:true, notifyWarn:true, notifyRole:true, notifyTicket:true,
@@ -3372,7 +3372,8 @@ async function handleOAuthCallback(){
   if(lsContent) lsContent.innerHTML = '<div style="text-align:center;"><div style="font-size:40px;margin-bottom:16px;">⏳</div><div style="font-size:18px;font-weight:700;color:#fff;">جاري التحقق من هويتك...</div></div>';
 
   try{
-    const r = await fetch(CFG.workerUrl + '/auth/callback', {
+    const workerEndpoint = CFG.workerUrl || 'https://moreeb-bot.hh3849815.workers.dev';
+    const r = await fetch(workerEndpoint + '/auth/callback', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ code, redirect_uri: REDIRECT_URI })
@@ -3464,8 +3465,8 @@ loadLS();
 renderRules();
 renderChatNav();
 renderRoomsList();
-// تحقق من OAuth callback
-handleOAuthCallback();
+// تحقق من OAuth callback بعد تحميل الإعدادات
+if(window.location.search.includes('code=')) handleOAuthCallback();
 // تحميل الأعضاء المحفوظين من localStorage
 try{
   const saved = localStorage.getItem('moreeb_discord_members');
