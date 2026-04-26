@@ -1136,31 +1136,26 @@ async function fetchDiscordRoles(){
 async function fetchDiscordMembers(){
   try{
     discordMembers = [];
-    const existingIds = new Set();
     let lastId = '0';
-    let page = 0;
-    let added = 0;
-
+    toast('جاري جلب الأعضاء...','i');
     while(true){
       const r = await fetch(CFG.workerUrl+'/members?after='+lastId);
       const data = await r.json();
       if(!Array.isArray(data)||data.length===0) break;
-      // أضف الأعضاء الجدد فقط
-      const newMembers = data.filter(m=>!existingIds.has(m.user?.id));
-      newMembers.forEach(m=>existingIds.add(m.user?.id));
-      discordMembers = discordMembers.concat(newMembers);
-      added += newMembers.length;
+      discordMembers = discordMembers.concat(data);
       lastId = data[data.length-1].user.id;
-      page++;
-      if(page%3===0) toast(`جلب الأعضاء... ${discordMembers.length} (+${added})`, 'i');
+      if(discordMembers.length%500===0) toast(`جلب... ${discordMembers.length}`,'i');
       if(data.length<100) break;
-      await new Promise(res=>setTimeout(res,1000));
+      await new Promise(res=>setTimeout(res,500));
     }
-
     if(discordMembers.length>0){
-      syncMembersFromDiscord();
+      // حفظ في localStorage
       try{ localStorage.setItem('moreeb_discord_members', JSON.stringify(discordMembers)); }catch(e){}
-      toast(`تم جلب ${discordMembers.length} عضو (+${added} جديد) ✅`,'s');
+      // عرض في صفحة الأعضاء
+      syncMembersFromDiscord();
+      renderMembers();
+      renderStats();
+      toast(`تم جلب ${discordMembers.length} عضو ✅`,'s');
       return true;
     }
   }catch(e){ console.error('members error',e); toast('خطأ في جلب الأعضاء','e'); }
