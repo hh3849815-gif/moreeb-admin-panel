@@ -1117,13 +1117,9 @@ async function fetchDiscordRoles(){
 
 async function fetchDiscordMembers(){
   try{
-    // ابدأ من آخر عضو موجود عشان نكمل بدل ما نبدأ من أول
-    const existingIds = new Set(discordMembers.map(m=>m.user?.id));
-    let lastId = discordMembers.length > 0
-      ? discordMembers.reduce((max,m)=> BigInt(m.user?.id||0) > BigInt(max) ? m.user.id : max, '0')
-      : '0';
-    
-    const startCount = discordMembers.length;
+    discordMembers = [];
+    const existingIds = new Set();
+    let lastId = '0';
     let page = 0;
     let added = 0;
 
